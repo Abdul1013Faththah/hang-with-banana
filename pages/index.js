@@ -1,30 +1,27 @@
 import { useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Home() {
   const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  // Function to handle login form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
+    setError("");
 
-    // Perform sign-in using NextAuth credentials provider
     const result = await signIn("credentials", {
-      redirect: false, // Stay on the same page
+      redirect: false,
       email,
       password,
     });
 
     if (result?.error) {
-      alert("Invalid email or password!");
-    } else {
-      console.log("Login successful:", result);
+      setError("Invalid email or password");
     }
   };
 
-  // If user is logged in, show sign-out button
   if (session) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -39,12 +36,12 @@ export default function Home() {
     );
   }
 
-  // Sign-in form and Google sign-in button
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h2 className="text-2xl mb-4">Sign In</h2>
+      {error && <p className="text-red-500">{error}</p>}
       <form
-        onSubmit={handleSubmit} // Make sure this is correctly set
+        onSubmit={handleSubmit}
         className="flex flex-col space-y-4 w-80 bg-gray-100 p-6 rounded-lg shadow-lg"
       >
         <input
@@ -67,9 +64,7 @@ export default function Home() {
           Sign in with Email
         </button>
       </form>
-
       <p className="mt-4">OR</p>
-
       <button
         className="p-3 mt-4 text-xl bg-blue-900 text-white rounded-lg"
         onClick={() => signIn("google")}
