@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.7.4",
+    "bcryptjs": "^3.0.2",
     "mongodb": "^6.13.0",
+    "mongoose": "^8.10.1",
     "next": "15.1.7",
     "next-auth": "^4.24.7",
     "react": "^19.0.0",
