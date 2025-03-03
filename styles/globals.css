@@ -70,3 +70,16 @@ button {
   background: blue;
   color: white;
 }
+
+input {
+  width: 90%;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: none;
+}
+
+.link {
+  color: cyan;
+  cursor: pointer;
+}

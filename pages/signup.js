@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Signup() {
@@ -6,44 +7,65 @@ export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
-    const res = await fetch("/api/auth/signup", {
+    const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
     });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error || "Something went wrong");
+    if (response.ok) {
+      alert("Signup successful! You can now log in.");
+      router.push("/");
     } else {
-      setSuccess("Account created! Redirecting...");
-      setTimeout(() => router.push("/signin"), 2000);
+      alert("Signup failed. Try again.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h2 className="text-2xl mb-4">Sign Up</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      {success && <p className="text-green-500">{success}</p>}
-      <form
-        onSubmit={handleSignup}
-        className="flex flex-col space-y-4 w-80 bg-gray-100 p-6 rounded-lg shadow-lg"
-      >
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="p-3 border rounded-lg" required />
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="p-3 border rounded-lg" required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="p-3 border rounded-lg" required />
-        <button type="submit" className="p-3 bg-blue-600 text-white rounded-lg">Sign Up</button>
-      </form>
+    <div className="container">
+      <div className="auth-box">
+        <h2>Sign up</h2>
+        <button className="google-btn" onClick={() => signIn("google")}>
+          Sign in with Google
+        </button>
+        <p>OR</p>
+        <form onSubmit={handleSignup}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="email-btn">
+            Sign up with email
+          </button>
+        </form>
+        <p>
+          Already have an account?{" "}
+          <span className="link" onClick={() => router.push("/")}>
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
