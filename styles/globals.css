@@ -83,3 +83,55 @@ input {
   color: cyan;
   cursor: pointer;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: url('/background.png') no-repeat center center/cover;
+}
+
+.auth-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.signout-btn {
+  background: red;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.level-box {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+}
+
+.level-btn {
+  display: block;
+  width: 200px;
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  background: yellow;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.level-btn:hover {
+  background: gold;
+}
