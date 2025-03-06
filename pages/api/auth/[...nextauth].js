@@ -1,22 +1,16 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs"; // Use bcryptjs instead of bcrypt
-import clientPromise from "../../../lib/mongodb"; // Use existing MongoDB connection
+import bcrypt from "bcryptjs";
+import clientPromise from "../../../lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export default NextAuth({
   providers: [
-    // Google OAuth authentication
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET
-    }),
-
-    // Email/Password authentication with MongoDB
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "email@example.com" },
+        email: { label: "Email", type: "email", placeholder: "you@example.com" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -24,17 +18,17 @@ export default NextAuth({
         const db = client.db();
         const user = await db.collection("users").findOne({ email: credentials.email });
 
-        if (!user) {
-          throw new Error("User not found");
-        }
+        if (!user) throw new Error("User not found");
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) {
-          throw new Error("Invalid password");
-        }
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isPasswordValid) throw new Error("Invalid credentials");
 
-        return { email: user.email, name: user.name };
+        return { id: user._id.toString(), name: user.username, email: user.email };
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -42,31 +36,6 @@ export default NextAuth({
     strategy: "jwt",
   },
   callbacks: {
-    async signIn({ user, account }) {
-      if (account.provider === "google") {
-        
-        try {
-          const client = await clientPromise;
-          const db = client.db();
-          
-          const existingUser = await db.collection("users").findOne({ email: user.email });
-
-          if (!existingUser) {
-            await db.collection("users").insertOne({
-              name: user.name,
-              email: user.email,
-              image: user.image,
-              provider: "google",
-              createdAt: new Date(),
-            });
-          }
-        } catch (error) {
-          console.error("Error saving Google user to DB:", error);
-          return false; // Reject the sign-in if there's an error
-        }
-      }
-      return true; // Allow sign-in
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -74,10 +43,27 @@ export default NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
+      const client = await clientPromise;
+      const db = client.db();
+      let user = await db.collection("users").findOne({ email: session.user.email });
+
+      // If user does not exist in DB, insert them
+      if (!user) {
+        const newUser = {
+          username: session.user.name,
+          email: session.user.email,
+          createdAt: new Date(),
+        };
+
+        const result = await db.collection("users").insertOne(newUser);
+        user = { ...newUser, _id: result.insertedId };
       }
+
+      session.user.id = user._id.toString();
       return session;
     },
+  },
+  pages: {
+    signIn: "/",
   },
 });

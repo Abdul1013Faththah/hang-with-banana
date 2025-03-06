@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Signup() {
@@ -21,7 +20,8 @@ export default function Signup() {
       alert("Signup successful! You can now log in.");
       router.push("/");
     } else {
-      alert("Signup failed. Try again.");
+      const data = await response.json();
+      alert(data.message || "Signup failed. Try again.");
     }
   };
 
@@ -29,10 +29,6 @@ export default function Signup() {
     <div className="container">
       <div className="auth-box">
         <h2>Sign up</h2>
-        <button className="google-btn" onClick={() => signIn("google")}>
-          Sign in with Google
-        </button>
-        <p>OR</p>
         <form onSubmit={handleSignup}>
           <input
             type="text"
@@ -61,7 +57,7 @@ export default function Signup() {
         </form>
         <p>
           Already have an account?{" "}
-          <span className="link" onClick={() => router.push("/index")}>
+          <span className="link" onClick={() => router.push("/")}>
             Login
           </span>
         </p>
