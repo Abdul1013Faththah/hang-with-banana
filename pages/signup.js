@@ -61,7 +61,7 @@ export default function Signup() {
         </form>
         <p>
           Already have an account?{" "}
-          <span className="link" onClick={() => router.push("/")}>
+          <span className="link" onClick={() => router.push("/index")}>
             Login
           </span>
         </p>
