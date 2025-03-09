@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb";
-import { ObjectId } from "mongodb";
 
 export default NextAuth({
   providers: [
@@ -20,6 +19,10 @@ export default NextAuth({
 
         if (!user) throw new Error("User not found");
 
+        if (!user.password) {
+          throw new Error("Please set a password first via Google login.");
+        }
+
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
         if (!isPasswordValid) throw new Error("Invalid credentials");
 
@@ -34,6 +37,7 @@ export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    useSecureCookies: false, // Ensures cookies work on localhost
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -47,11 +51,12 @@ export default NextAuth({
       const db = client.db();
       let user = await db.collection("users").findOne({ email: session.user.email });
 
-      // If user does not exist in DB, insert them
       if (!user) {
         const newUser = {
           username: session.user.name,
           email: session.user.email,
+          password: null, // User must set password manually
+          provider: "google",
           createdAt: new Date(),
         };
 
@@ -60,6 +65,8 @@ export default NextAuth({
       }
 
       session.user.id = user._id.toString();
+      session.needsPassword = !user.password;
+
       return session;
     },
   },
