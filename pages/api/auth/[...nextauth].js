@@ -1,15 +1,19 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs";
+import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "../../../lib/mongodb";
+import bcrypt from "bcryptjs";
 
 export default NextAuth({
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "you@example.com" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -17,60 +21,42 @@ export default NextAuth({
         const db = client.db();
         const user = await db.collection("users").findOne({ email: credentials.email });
 
-        if (!user) throw new Error("User not found");
-
-        if (!user.password) {
-          throw new Error("Please set a password first via Google login.");
+        if (!user || !(await bcrypt.compare(credentials.password, user.password))) {
+          throw new Error("Invalid credentials");
         }
-
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isPasswordValid) throw new Error("Invalid credentials");
-
-        return { id: user._id.toString(), name: user.username, email: user.email };
+        return user;
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-    useSecureCookies: false, // Ensures cookies work on localhost
-  },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
+    async signIn({ user, account }) {
       const client = await clientPromise;
       const db = client.db();
-      let user = await db.collection("users").findOne({ email: session.user.email });
 
-      if (!user) {
-        const newUser = {
-          username: session.user.name,
-          email: session.user.email,
-          password: null, // User must set password manually
-          provider: "google",
-          createdAt: new Date(),
-        };
+      const existingUser = await db.collection("users").findOne({ email: user.email });
 
-        const result = await db.collection("users").insertOne(newUser);
-        user = { ...newUser, _id: result.insertedId };
+      if (!existingUser) {
+        // Create new user with empty password
+        await db.collection("users").insertOne({
+          email: user.email,
+          name: user.name,
+          password: null, // No password initially
+        });
       }
 
-      session.user.id = user._id.toString();
-      session.needsPassword = !user.password;
+      return true;
+    },
+
+    async session({ session }) {
+      const client = await clientPromise;
+      const db = client.db();
+      const dbUser = await db.collection("users").findOne({ email: session.user.email });
+
+      session.user.needsPassword = !dbUser?.password; // Set flag if password is missing
 
       return session;
     },
   },
-  pages: {
-    signIn: "/",
-  },
+  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: "jwt" },
 });

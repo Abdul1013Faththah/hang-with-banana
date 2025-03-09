@@ -9,17 +9,22 @@ export default function Levels() {
     router.push(`/game?level=${level}`);
   };
 
+  const handleSignOut = async () => {
+    await signOut({ redirect: false }); 
+    router.push("/"); 
+  };
+
   return (
     <div className="container">
       {session && (
         <div className="auth-info">
           <p>Signed in as {session.user?.name || "Guest"}</p>
-          <button className="signout-btn" onClick={() => signOut()}>
+          <button className="signout-btn" onClick={handleSignOut}>
             Sign out
           </button>
         </div>
       )}
-      
+
       <div className="level-box">
         <h2>Select Level</h2>
         <button className="level-btn" onClick={() => handleLevelSelect("easy")}>

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 export default function SetPassword() {
+  const { data: session } = useSession();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,12 +17,11 @@ export default function SetPassword() {
       body: JSON.stringify({ password }),
     });
 
-    const data = await res.json();
     if (res.ok) {
-      alert("Password set successfully! You can now log in with email.");
-      router.push("/levels");
+      alert("Password set successfully! You can now play.");
+      router.push("/levels"); // Redirect to game levels
     } else {
-      setError(data.error);
+      setError("Failed to set password.");
     }
   };
 

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { getSession } from "next-auth/react";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end(); // Allow only POST requests
+  if (req.method !== "POST") return res.status(405).end(); // Only allow POST
 
   const session = await getSession({ req });
   if (!session) return res.status(401).json({ error: "Unauthorized" });
