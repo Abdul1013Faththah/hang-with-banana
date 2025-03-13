@@ -9,10 +9,22 @@ export default function Home() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (session?.needsPassword) {
-      router.push("/set-password"); // Redirect Google users to set password
+    if (session?.user) {
+      fetch("/api/check-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: session.user.email }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.requiresPassword) {
+            router.push("/set-password"); // Redirect to password setup page
+          } else {
+            router.push("/levels"); // Proceed to game levels
+          }
+        });
     }
-  }, [session]);
+  }, [session, router]);
 
   const handleEmailSignIn = async (e) => {
     e.preventDefault();

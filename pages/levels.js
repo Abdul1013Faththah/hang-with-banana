@@ -10,9 +10,10 @@ export default function Levels() {
   };
 
   const handleSignOut = async () => {
-    await signOut({ redirect: false }); 
-    router.push("/"); 
-  };
+    await signOut({ redirect: false }); // Clears NextAuth session
+    document.cookie = "__Secure-next-auth.session-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    window.location.href = "https://accounts.google.com/Logout"; // Ensures Google logs out
+  }
 
   return (
     <div className="container">

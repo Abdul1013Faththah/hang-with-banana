@@ -9,6 +9,13 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent", // Forces Google account selection
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -41,9 +48,12 @@ export default NextAuth({
           email: user.email,
           name: user.name,
           password: null, // No password initially
+          createdAt: new Date(),
         });
       }
-
+      if (user) {
+        session.user.id = user._id;
+      }
       return true;
     },
 
@@ -59,4 +69,15 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
+
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
 });
