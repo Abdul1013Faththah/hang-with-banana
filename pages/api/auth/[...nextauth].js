@@ -61,16 +61,8 @@ export default NextAuth({
               points: 0,
               createdAt: new Date(),
             });
-
-            existingUser = { ...user, id: newUser.insertedId, points: 0 };
-          } else {
-            existingUser = { ...existingUser, id: existingUser._id };
           }
 
-          user.id = existingUser.id;
-          user.points = existingUser.points;
-
-          
         } catch (error) {
           console.error("Error saving Google user to DB:", error);
           return false;
