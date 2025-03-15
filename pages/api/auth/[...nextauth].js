@@ -62,10 +62,10 @@ export default NextAuth({
           }
         } catch (error) {
           console.error("Error saving Google user to DB:", error);
-          return false; // Reject the sign-in if there's an error
+          return false;
         }
       }
-      return true; // Allow sign-in
+      return true;
     },
     async jwt({ token, user }) {
       if (user) {
