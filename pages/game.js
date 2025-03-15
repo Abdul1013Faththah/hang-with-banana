@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 
 export default function Game() {
-  const { data: session } = useSession();
+  const { data: session , status } = useSession();
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -13,7 +13,7 @@ export default function Game() {
   const [userAnswer, setUserAnswer] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
   const [timeLeft, setTimeLeft] = useState(null);
-  const [points, setPoints] = useState(0);
+  const [points, setPoints] = useState(session?.user?.points || 0);
   const [message, setMessage] = useState("");
   const router = useRouter();
 

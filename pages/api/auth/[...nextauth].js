@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs"; // Use bcryptjs instead of bcrypt
-import clientPromise from "../../../lib/mongodb"; // Use existing MongoDB connection
+import bcrypt from "bcryptjs";
+import clientPromise from "../../../lib/mongodb"; 
 
 export default NextAuth({
   providers: [
@@ -49,7 +49,7 @@ export default NextAuth({
           const client = await clientPromise;
           const db = client.db();
           
-          const existingUser = await db.collection("users").findOne({ email: user.email });
+          let existingUser = await db.collection("users").findOne({ email: user.email });
 
           if (!existingUser) {
             await db.collection("users").insertOne({
@@ -58,9 +58,19 @@ export default NextAuth({
               username: user.email.split("@")[0],
               image: user.image,
               provider: "google",
+              points: 0,
               createdAt: new Date(),
             });
+
+            existingUser = { ...user, id: newUser.insertedId, points: 0 };
+          } else {
+            existingUser = { ...existingUser, id: existingUser._id };
           }
+
+          user.id = existingUser.id;
+          user.points = existingUser.points;
+
+          
         } catch (error) {
           console.error("Error saving Google user to DB:", error);
           return false;
@@ -72,7 +82,7 @@ export default NextAuth({
       if (user) {
         token.id = user.id;
         token.name = user.name;
-        token.email = user.email;  
+        token.email = user.email;
       }
       return token;
     },
@@ -81,8 +91,10 @@ export default NextAuth({
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
+
       }
       return session;
     },
   },
+
 });
