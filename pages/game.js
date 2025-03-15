@@ -1,22 +1,8 @@
 import { useState, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
-const difficultySettings = {
-  easy: { time: null, points: 1 },
-  medium: { time: 60, points: 2 },
-  hard: { time: 30, points: 3 },
-};
 
-const handleSignOut = async () => {
-  sessionStorage.clear();
-  localStorage.clear();
-  
-  if (session) {
-    await signOut({ callbackUrl: "/" });
-  } else {
-    router.push("/");
-  }
-};
 
 export default function Game() {
   const { data: session } = useSession();
@@ -29,6 +15,7 @@ export default function Game() {
   const [timeLeft, setTimeLeft] = useState(null);
   const [points, setPoints] = useState(0);
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const storedGuest = sessionStorage.getItem("guest");
@@ -53,6 +40,23 @@ export default function Game() {
       setMessage("Time's up! Try again.");
     }
   }, [timeLeft]);
+
+  const difficultySettings = {
+    easy: { time: null, points: 1 },
+    medium: { time: 60, points: 2 },
+    hard: { time: 30, points: 3 },
+  };
+  
+   const handleSignOut = async () => {
+      sessionStorage.clear();
+      localStorage.clear();
+      
+      if (session) {
+        await signOut({ callbackUrl: "/" });
+      } else {
+        router.push("/");
+      }
+    };
 
   async function fetchNewQuestion() {
     setMessage("");
