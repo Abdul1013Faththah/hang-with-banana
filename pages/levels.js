@@ -1,6 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
+
 export default function Levels() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -10,7 +11,8 @@ export default function Levels() {
   };
 
   return (
-    <div className="container">
+    <div className="game-page">
+      <div className="container">
       {session && (
         <div className="auth-info">
           <p>Signed in as {session.user?.name || "Guest"}</p>
@@ -33,5 +35,7 @@ export default function Levels() {
         </button>
       </div>
     </div>
+    </div>
+    
   );
 }

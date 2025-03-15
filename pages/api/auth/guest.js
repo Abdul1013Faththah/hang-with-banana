@@ -1,4 +1,4 @@
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../../../lib/mongodb";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
     const guestId = `guest_${Date.now()}`;
 
-    const result = await db.collection("users").insertOne({
+    await db.collection("users").insertOne({
       guestId: guestId,
       createdAt: new Date(),
     });

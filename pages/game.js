@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
 
 const difficultySettings = {
   easy: { time: null, points: 1 },
@@ -76,6 +77,16 @@ export default function Game() {
   }
 
   return (
+      
+    <div className="game-page">
+    {session && (
+            <div className="auth-info">
+              <p>Signed in as {session.user?.name || "Guest"}</p>
+              <button className="signout-btn" onClick={() => signOut()}>
+                Sign out
+              </button>
+            </div>
+          )}
     <div className="game-container">
       <h1>Banana Math Game</h1>
       <div>
@@ -107,5 +118,7 @@ export default function Game() {
 
       <p>Your Total Points: {points}</p>
     </div>
+    </div>  
+      
   );
 }
