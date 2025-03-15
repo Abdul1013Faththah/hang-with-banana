@@ -55,6 +55,7 @@ export default NextAuth({
             await db.collection("users").insertOne({
               name: user.name,
               email: user.email,
+              username: user.email.split("@")[0],
               image: user.image,
               provider: "google",
               createdAt: new Date(),
