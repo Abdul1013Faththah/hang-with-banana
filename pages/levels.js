@@ -20,6 +20,17 @@ export default function Levels() {
     router.push(`/game?level=${level}`);
   };
 
+  const handleSignOut = async () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    
+    if (session) {
+      await signOut({ callbackUrl: "/" });
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <div className="game-page">
       <div className="container">
@@ -33,11 +44,7 @@ export default function Levels() {
           )}
           <button
             className="signout-btn"
-            onClick={() => {
-              sessionStorage.clear();
-              localStorage.clear();
-              signOut();
-            }}
+            onClick={handleSignOut}
           >
             Sign out
           </button>

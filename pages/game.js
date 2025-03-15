@@ -7,6 +7,17 @@ const difficultySettings = {
   hard: { time: 30, points: 3 },
 };
 
+const handleSignOut = async () => {
+  sessionStorage.clear();
+  localStorage.clear();
+  
+  if (session) {
+    await signOut({ callbackUrl: "/" });
+  } else {
+    router.push("/");
+  }
+};
+
 export default function Game() {
   const { data: session } = useSession();
   const [guest, setGuest] = useState(false);
@@ -97,11 +108,7 @@ export default function Game() {
         )}
         <button
           className="signout-btn"
-          onClick={() => {
-            sessionStorage.clear();
-            localStorage.clear();
-            signOut();
-          }}
+          onClick={handleSignOut}
         >
           Sign out
         </button>
