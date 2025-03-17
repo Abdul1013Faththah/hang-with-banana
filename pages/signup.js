@@ -29,10 +29,6 @@ export default function Signup() {
     <div className="container">
       <div className="auth-box">
         <h2>Sign up</h2>
-        <button className="google-btn" onClick={() => signIn("google")}>
-          Sign in with Google
-        </button>
-        <p>OR</p>
         <form onSubmit={handleSignup}>
           <input
             type="text"
