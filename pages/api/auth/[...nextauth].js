@@ -1,15 +1,15 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs"; // Use bcryptjs instead of bcrypt
-import clientPromise from "../../../lib/mongodb"; // Use existing MongoDB connection
+import bcrypt from "bcryptjs";
+import clientPromise from "../../../lib/mongodb"; 
 
 export default NextAuth({
   providers: [
     // Google OAuth authentication
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }),
 
     // Email/Password authentication with MongoDB
@@ -49,35 +49,44 @@ export default NextAuth({
           const client = await clientPromise;
           const db = client.db();
           
-          const existingUser = await db.collection("users").findOne({ email: user.email });
+          let existingUser = await db.collection("users").findOne({ email: user.email });
 
           if (!existingUser) {
             await db.collection("users").insertOne({
               name: user.name,
               email: user.email,
+              username: user.email.split("@")[0],
               image: user.image,
               provider: "google",
+              points: 0,
               createdAt: new Date(),
             });
           }
+
         } catch (error) {
           console.error("Error saving Google user to DB:", error);
-          return false; // Reject the sign-in if there's an error
+          return false;
         }
       }
-      return true; // Allow sign-in
+      return true;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+
       }
       return session;
     },
   },
+
 });

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useSession ,signIn ,signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export default function Home() {
+export default function Component() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,10 +18,31 @@ export default function Home() {
     else alert("Invalid credentials");
   };
 
-  const handleGuestSignIn = () => {
-    router.push("/levels"); // Redirects guest users to level selection
+  const handleGuestSignIn = async () => {
+    try {
+      const response = await fetch("/api/auth/guest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      const data = await response.json();
+      if (data.success) {
+        localStorage.setItem("guestId", data.guestId); // Store guest ID
+        sessionStorage.setItem("guest", "true"); // Indicate guest session
+        router.push("/levels");
+      } else {
+        alert("Error creating guest user. Please try again.");
+      }
+    } catch (error) {
+      console.error("Guest sign-in error:", error);
+      alert("Something went wrong!");
+    }
   };
 
+  const {data: session} = useSession()
+  if(session){
+    router.push("/levels");
+  }
   return (
     <div className="container">
       <div className="auth-box">

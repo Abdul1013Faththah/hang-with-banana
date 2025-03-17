@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
     const client = await clientPromise;
     const db = client.db();
 
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     // Insert new user
     await db.collection("users").insertOne({
-      username,
+      name,
       email,
       password: hashedPassword,
       createdAt: new Date(),

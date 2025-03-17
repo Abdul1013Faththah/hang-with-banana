@@ -1,4 +1,4 @@
-import clientPromise from "../../lib/mongodb";
+import clientPromise from "../../../lib/mongodb";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -7,13 +7,11 @@ export default async function handler(req, res) {
 
   try {
     const client = await clientPromise;
-    const db = client.db("hang-with-banana"); // Replace with your database name
+    const db = client.db("hang-with-banana");
 
-    // Generate a random guest ID
     const guestId = `guest_${Date.now()}`;
 
-    // Insert guest user into the database
-    const result = await db.collection("users").insertOne({
+    await db.collection("users").insertOne({
       guestId: guestId,
       createdAt: new Date(),
     });
