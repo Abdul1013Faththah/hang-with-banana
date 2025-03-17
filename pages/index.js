@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useSession ,signIn ,signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export default function Home() {
+export default function Component() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,6 +39,10 @@ export default function Home() {
     }
   };
 
+  const {data: session} = useSession()
+  if(session){
+    router.push("/levels");
+  }
   return (
     <div className="container">
       <div className="auth-box">
