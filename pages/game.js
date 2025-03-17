@@ -26,6 +26,19 @@ export default function Game() {
   }, []);
 
   useEffect(() => {
+    if (session?.user?.email) {
+      fetch(`/api/getPoints?email=${session.user.email}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.points !== undefined) {
+            setPoints(data.points); // Set points from database
+          }
+        })
+        .catch((error) => console.error("Error fetching points:", error));
+    }
+  }, [session]);
+
+  useEffect(() => {
     if (difficulty !== "easy") {
       setTimeLeft(difficultySettings[difficulty].time);
     }
