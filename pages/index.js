@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { useSession ,signIn ,signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Component() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      console.log("User session:", session);
+      router.push("/leaderboard");
+    }
+  }, [status]);
 
   const handleEmailSignIn = async (e) => {
     e.preventDefault();
@@ -14,7 +22,7 @@ export default function Component() {
       email,
       password,
     });
-    if (result.ok) router.push("/levels");
+    if (result.ok) router.push("/leaderboard");
     else alert("Invalid credentials");
   };
 
@@ -39,10 +47,7 @@ export default function Component() {
     }
   };
 
-  const {data: session} = useSession()
-  if(session){
-    router.push("/levels");
-  }
+  if (status === "loading") return <p>Loading...</p>;
   return (
     <div className="container">
       <div className="auth-box">
