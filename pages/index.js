@@ -10,6 +10,7 @@ export default function Component() {
 
   useEffect(() => {
     if (status === "authenticated") {
+      console.log("User session:", session);
       router.push("/leaderboard");
     }
   }, [status]);
@@ -21,7 +22,7 @@ export default function Component() {
       email,
       password,
     });
-    if (result.ok) router.push("/levels");
+    if (result.ok) router.push("/leaderboard");
     else alert("Invalid credentials");
   };
 
