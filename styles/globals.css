@@ -134,3 +134,56 @@ input {
 .level-btn:hover {
   background: gold;
 }
+
+/* leader board style */
+
+.leaderboard-container {
+  text-align: center;
+  background: #222;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  margin: auto;
+}
+
+.leaderboard {
+  max-height: 300px;
+  overflow-y: auto;
+  border-radius: 10px;
+  background: #333;
+  padding: 10px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: yellow;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 20px;
+}
+
+.rank {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+}
+
+.username {
+  flex-grow: 1;
+  text-align: left;
+  padding: 0 10px;
+}
+
+.points {
+  font-size: 18px;
+  font-weight: bold;
+}
