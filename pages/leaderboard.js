@@ -39,7 +39,7 @@ export default function Leaderboard() {
           </div>
         ))}
       </div>
-      <button onClick={() => router.push("/levels")}>Select Level</button>
+      <button onClick={() => router.push("/levels")}>Play Game</button>
     </div>
   );
 }
