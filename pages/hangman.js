@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-
 export default function HangmanGame() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -25,12 +24,26 @@ export default function HangmanGame() {
 
   const fetchWord = async (selectedCategory) => {
     setCategory(selectedCategory);
-    const response = await fetch(`https://www.wordgamedb.com/api/v1/words?category=${selectedCategory}`);
-    const data = await response.json();
-    if (data && data.length > 0) {
-      const randomWord = data[0].toUpperCase();
-      setWord(randomWord);
-      setDisplayWord(Array(randomWord.length).fill("_"));
+    setGuessedLetters([]);
+    setWrongGuesses(0);
+    
+    try {
+      let url = selectedCategory
+        ? `https://www.wordgamedb.com/api/v1/words?category=${selectedCategory}`
+        : "https://www.wordgamedb.com/api/v1/words/random";
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.word) {
+        const randomWord = data.word.toUpperCase();
+        setWord(randomWord);
+        setDisplayWord(Array(randomWord.length).fill("_"));
+      } else {
+        console.error("Invalid response format", data);
+      }
+    } catch (error) {
+      console.error("Error fetching word:", error);
     }
   };
 
@@ -45,7 +58,7 @@ export default function HangmanGame() {
       setDisplayWord(updatedWord);
       if (!updatedWord.includes("_")) handleGameEnd(true);
     } else {
-      setWrongGuesses(wrongGuesses + 1);
+      setWrongGuesses((prev) => prev + 1);
       if (wrongGuesses + 1 >= maxWrongGuesses) handleGameEnd(false);
     }
   };
@@ -61,8 +74,10 @@ export default function HangmanGame() {
         body: JSON.stringify({ email: session.user.email, points }),
       });
     }
+  };
 
-    setTimeout(() => router.push("/levels"), 2000);
+  const restartGame = () => {
+    fetchWord(category);
   };
 
   return (
@@ -73,10 +88,16 @@ export default function HangmanGame() {
           <button onClick={() => fetchWord("Fruits")}>Fruits</button>
           <button onClick={() => fetchWord("Animals")}>Animals</button>
           <button onClick={() => fetchWord("Countries")}>Countries</button>
+          <button onClick={() => fetchWord(null)}>Random Word</button>
         </div>
       ) : (
         <div className="game-area">
-          <h2>Category: {category}</h2>
+          <h2>Category: {category || "Random"}</h2>
+
+          {/* Back to Category Button */}
+          <button className="back-btn" onClick={() => setCategory(null)}>
+            🔙 Back to Categories
+          </button>
 
           {/* Hangman Drawing */}
           <div className="hangman-drawing">
@@ -88,8 +109,16 @@ export default function HangmanGame() {
             <div className={`hangman-part leg-right ${wrongGuesses > 5 ? "show" : ""}`} />
           </div>
 
+          {/* Display Word */}
           <div className="word-display">{displayWord.join(" ")}</div>
-          
+
+          {/* Guessed Letters */}
+          <div className="guessed-letters">
+            <strong>Guessed Letters: </strong>
+            {guessedLetters.length > 0 ? guessedLetters.join(", ") : "None"}
+          </div>
+
+          {/* Virtual Keyboard */}
           <div className="keyboard">
             {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
               <button
@@ -103,6 +132,9 @@ export default function HangmanGame() {
           </div>
 
           <p>Wrong Guesses: {wrongGuesses} / {maxWrongGuesses}</p>
+
+          {/* Restart Game Button */}
+          <button className="restart-btn" onClick={restartGame}>🔄 Restart Game</button>
         </div>
       )}
     </div>
