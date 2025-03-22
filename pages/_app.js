@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import "../styles/hangman.css";
 
 import { SessionProvider } from "next-auth/react"
 
