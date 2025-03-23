@@ -7,6 +7,8 @@ export default function Levels() {
   const router = useRouter();
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [points, setPoints] = useState(null);
 
   useEffect(() => {
     const storedGuest = sessionStorage.getItem("guest");
@@ -16,8 +18,31 @@ export default function Levels() {
     }
   }, []);
 
+  useEffect(() => {
+    if (session?.user) {
+      fetch(`/api/getPoints?email=${session.user.email}`)
+        .then((res) => res.json())
+        .then((data) => setPoints(data.points ?? 0)) // ✅ Ensure points is always a number
+        .catch((err) => {
+          console.error("Error fetching points:", err);
+          setPoints(0); // ✅ Fallback to 0 in case of an error
+        });
+    }
+  }, [session]);
+
+
   const handleLevelSelect = (level) => {
     router.push(`/game?level=${level}`);
+  };
+
+  const handlePlayHangman = () => {
+    if (!session) {
+      setShowLoginPrompt(true);
+    } else if (points < 10) {
+      alert("You need at least 10 points to play Hangman!");
+    } else {
+      router.push("/hangman");
+    }
   };
 
   const handleSignOut = async () => {
@@ -61,6 +86,18 @@ export default function Levels() {
           <button className="level-btn" onClick={() => handleLevelSelect("hard")}>
             Hard <br /> (30 sec timer, 3 points)
           </button>
+          <button className="hangman-btn" onClick={handlePlayHangman}>
+            Play Hangman
+          </button>
+
+            {showLoginPrompt && (
+          <div className="popup">
+            <p>You need to log in to play Hangman.</p>
+            <button onClick={() => router.push("/")}>Log in</button>
+            <button onClick={() => setShowLoginPrompt(false)}>Cancel</button>
+          </div>
+          )}
+
         </div>
       </div>
     </div>

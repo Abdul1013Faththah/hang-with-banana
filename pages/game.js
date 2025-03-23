@@ -16,6 +16,7 @@ export default function Game() {
   const [points, setPoints] = useState(session?.user?.points || 0);
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     const storedGuest = sessionStorage.getItem("guest");
@@ -58,6 +59,16 @@ export default function Game() {
     easy: { time: null, points: 1 },
     medium: { time: 60, points: 2 },
     hard: { time: 30, points: 3 },
+  };
+
+  const handlePlayHangman = () => {
+    if (!session) {
+      setShowLoginPrompt(true); // Ask guest to log in
+    } else if (points < 10) {
+      alert("You need at least 10 points to play Hangman!");
+    } else {
+      router.push("/hangman");
+    }
   };
   
    const handleSignOut = async () => {
@@ -161,6 +172,19 @@ export default function Game() {
         <button onClick={fetchNewQuestion}>Next</button>
 
         <p>Your Total Points: {points}</p>
+
+        <button className="hangman-btn" onClick={handlePlayHangman}>
+          Play Hangman
+        </button>
+
+          {showLoginPrompt && (
+          <div className="popup">
+            <p>You need to log in to play Hangman.</p>
+            <button onClick={() => router.push("/")}>Log in</button>
+            <button onClick={() => setShowLoginPrompt(false)}>Cancel</button>
+          </div>
+          )}
+
       </div>
     </div>
   );
