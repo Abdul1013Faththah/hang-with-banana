@@ -7,9 +7,11 @@ export default function HangmanGame() {
   const router = useRouter();
   const [category, setCategory] = useState(null);
   const [word, setWord] = useState("");
+  const [hint, setHint] = useState(""); 
   const [displayWord, setDisplayWord] = useState([]);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
+  const [gameOver, setGameOver] = useState(false); // Game over state
   const maxWrongGuesses = 6;
 
   useEffect(() => {
@@ -26,21 +28,26 @@ export default function HangmanGame() {
     setCategory(selectedCategory);
     setGuessedLetters([]);
     setWrongGuesses(0);
-    
-    try {
-      let url = selectedCategory
-        ? `https://www.wordgamedb.com/api/v1/words?category=${selectedCategory}`
-        : "https://www.wordgamedb.com/api/v1/words/random";
+    setGameOver(false);
 
+    try {
+      let url = `https://www.wordgamedb.com/api/v1/words?category=${selectedCategory.toLowerCase()}`;
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data && data.word) {
-        const randomWord = data.word.toUpperCase();
+      console.log("API Response:", data);
+
+      if (Array.isArray(data) && data.length > 0) {
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const randomWord = data[randomIndex].word.toUpperCase();
+        const wordHint = data[randomIndex].hint || "No hint available"; 
+
         setWord(randomWord);
+        setHint(wordHint);
         setDisplayWord(Array(randomWord.length).fill("_"));
       } else {
-        console.error("Invalid response format", data);
+        console.error("No words found in the selected category:", data);
+        alert("No words found in this category. Try another one.");
       }
     } catch (error) {
       console.error("Error fetching word:", error);
@@ -48,7 +55,7 @@ export default function HangmanGame() {
   };
 
   const handleLetterClick = (letter) => {
-    if (guessedLetters.includes(letter) || !word) return;
+    if (guessedLetters.includes(letter) || !word || gameOver) return; // Prevent selection if game is over
     setGuessedLetters([...guessedLetters, letter]);
 
     if (word.includes(letter)) {
@@ -58,14 +65,17 @@ export default function HangmanGame() {
       setDisplayWord(updatedWord);
       if (!updatedWord.includes("_")) handleGameEnd(true);
     } else {
-      setWrongGuesses((prev) => prev + 1);
-      if (wrongGuesses + 1 >= maxWrongGuesses) handleGameEnd(false);
+      const newWrongGuesses = wrongGuesses + 1;
+      setWrongGuesses(newWrongGuesses);
+      if (newWrongGuesses >= maxWrongGuesses) handleGameEnd(false);
     }
   };
 
   const handleGameEnd = async (won) => {
+    setGameOver(true); // Mark the game as over
+    setDisplayWord(word.split("")); // Reveal the correct word
     const points = won ? 5 : -3;
-    alert(won ? "You Win! 🎉" : "Game Over! ❌");
+    alert(won ? "You Win! 🎉" : `Game Over! ❌ The word was: ${word}`);
 
     if (session) {
       await fetch("/api/updatePoints", {
@@ -85,21 +95,16 @@ export default function HangmanGame() {
       {!category ? (
         <div className="category-selection">
           <h2>Select a Category</h2>
-          <button onClick={() => fetchWord("Fruits")}>Fruits</button>
-          <button onClick={() => fetchWord("Animals")}>Animals</button>
-          <button onClick={() => fetchWord("Countries")}>Countries</button>
-          <button onClick={() => fetchWord(null)}>Random Word</button>
+          <button onClick={() => fetchWord("animal")}>Animals</button>
+          <button onClick={() => fetchWord("country")}>Countries</button>
+          <button onClick={() => fetchWord("food")}>Food</button>
+          <button onClick={() => fetchWord("plant")}>Plants</button>
+          <button onClick={() => fetchWord("sport")}>Sports</button>
         </div>
       ) : (
         <div className="game-area">
-          <h2>Category: {category || "Random"}</h2>
+          <h2>Category: {category}</h2>
 
-          {/* Back to Category Button */}
-          <button className="back-btn" onClick={() => setCategory(null)}>
-            🔙 Back to Categories
-          </button>
-
-          {/* Hangman Drawing */}
           <div className="hangman-drawing">
             <div className={`hangman-part head ${wrongGuesses > 0 ? "show" : ""}`} />
             <div className={`hangman-part body ${wrongGuesses > 1 ? "show" : ""}`} />
@@ -109,22 +114,18 @@ export default function HangmanGame() {
             <div className={`hangman-part leg-right ${wrongGuesses > 5 ? "show" : ""}`} />
           </div>
 
-          {/* Display Word */}
           <div className="word-display">{displayWord.join(" ")}</div>
 
-          {/* Guessed Letters */}
-          <div className="guessed-letters">
-            <strong>Guessed Letters: </strong>
-            {guessedLetters.length > 0 ? guessedLetters.join(", ") : "None"}
+          <div className="hint-box">
+            <strong>Hint: </strong> {hint}
           </div>
 
-          {/* Virtual Keyboard */}
           <div className="keyboard">
             {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
               <button
                 key={letter}
                 onClick={() => handleLetterClick(letter)}
-                disabled={guessedLetters.includes(letter)}
+                disabled={guessedLetters.includes(letter) || gameOver}
               >
                 {letter}
               </button>
@@ -133,8 +134,10 @@ export default function HangmanGame() {
 
           <p>Wrong Guesses: {wrongGuesses} / {maxWrongGuesses}</p>
 
-          {/* Restart Game Button */}
-          <button className="restart-btn" onClick={restartGame}>🔄 Restart Game</button>
+          <div className="game-options">
+            <button className="restart-btn" onClick={restartGame}>🔄 Restart Game</button>
+            <button className="back-btn" onClick={() => setCategory(null)}>🔙 Back to Categories</button>
+          </div>
         </div>
       )}
     </div>
