@@ -7,6 +7,7 @@ export default function HangmanGame() {
   const router = useRouter();
   const [category, setCategory] = useState(null);
   const [word, setWord] = useState("");
+  const [hint, setHint] = useState(""); 
   const [displayWord, setDisplayWord] = useState([]);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
@@ -27,20 +28,22 @@ export default function HangmanGame() {
     setCategory(selectedCategory);
     setGuessedLetters([]);
     setWrongGuesses(0);
-    setGameOver(false); // Reset game state
+    setGameOver(false);
 
     try {
       let url = `https://www.wordgamedb.com/api/v1/words?category=${selectedCategory.toLowerCase()}`;
       const response = await fetch(url);
       const data = await response.json();
 
-      console.log("API Response:", data); // Debugging
+      console.log("API Response:", data);
 
       if (Array.isArray(data) && data.length > 0) {
         const randomIndex = Math.floor(Math.random() * data.length);
         const randomWord = data[randomIndex].word.toUpperCase();
+        const wordHint = data[randomIndex].hint || "No hint available"; 
 
         setWord(randomWord);
+        setHint(wordHint);
         setDisplayWord(Array(randomWord.length).fill("_"));
       } else {
         console.error("No words found in the selected category:", data);
@@ -102,7 +105,6 @@ export default function HangmanGame() {
         <div className="game-area">
           <h2>Category: {category}</h2>
 
-          {/* Hangman Drawing */}
           <div className="hangman-drawing">
             <div className={`hangman-part head ${wrongGuesses > 0 ? "show" : ""}`} />
             <div className={`hangman-part body ${wrongGuesses > 1 ? "show" : ""}`} />
@@ -112,22 +114,18 @@ export default function HangmanGame() {
             <div className={`hangman-part leg-right ${wrongGuesses > 5 ? "show" : ""}`} />
           </div>
 
-          {/* Display Word */}
           <div className="word-display">{displayWord.join(" ")}</div>
 
-          {/* Guessed Letters */}
-          <div className="guessed-letters">
-            <strong>Guessed Letters: </strong>
-            {guessedLetters.length > 0 ? guessedLetters.join(", ") : "None"}
+          <div className="hint-box">
+            <strong>Hint: </strong> {hint}
           </div>
 
-          {/* Virtual Keyboard (Disabled on Game Over) */}
           <div className="keyboard">
             {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
               <button
                 key={letter}
                 onClick={() => handleLetterClick(letter)}
-                disabled={guessedLetters.includes(letter) || gameOver} // Disable if game is over
+                disabled={guessedLetters.includes(letter) || gameOver}
               >
                 {letter}
               </button>
@@ -136,7 +134,6 @@ export default function HangmanGame() {
 
           <p>Wrong Guesses: {wrongGuesses} / {maxWrongGuesses}</p>
 
-          {/* Restart & Back to Categories Buttons (Always Visible) */}
           <div className="game-options">
             <button className="restart-btn" onClick={restartGame}>🔄 Restart Game</button>
             <button className="back-btn" onClick={() => setCategory(null)}>🔙 Back to Categories</button>
