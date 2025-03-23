@@ -22,30 +22,40 @@ export default function HangmanGame() {
     checkPoints();
   }, [session]);
 
+
   const fetchWord = async (selectedCategory) => {
     setCategory(selectedCategory);
     setGuessedLetters([]);
     setWrongGuesses(0);
     
     try {
-      let url = selectedCategory
-        ? `https://www.wordgamedb.com/api/v1/words?category=${selectedCategory}`
-        : "https://www.wordgamedb.com/api/v1/words/random";
-
+      let url = `https://www.wordgamedb.com/api/v1/words?category=${selectedCategory.toLowerCase()}`;
       const response = await fetch(url);
       const data = await response.json();
-
-      if (data && data.word) {
-        const randomWord = data.word.toUpperCase();
+  
+      console.log("API Response:", data); // Debugging
+  
+      if (Array.isArray(data) && data.length > 0) {
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const randomWord = data[randomIndex].word.toUpperCase();
+  
         setWord(randomWord);
         setDisplayWord(Array(randomWord.length).fill("_"));
       } else {
-        console.error("Invalid response format", data);
+        console.error("No words found in the selected category:", data);
+        alert("No words found in this category. Try another one.");
       }
     } catch (error) {
       console.error("Error fetching word:", error);
     }
   };
+  
+
+  useEffect(() => {
+    if (category) {
+      fetchWord(category);
+    }
+  }, [category]);
 
   const handleLetterClick = (letter) => {
     if (guessedLetters.includes(letter) || !word) return;
@@ -85,14 +95,14 @@ export default function HangmanGame() {
       {!category ? (
         <div className="category-selection">
           <h2>Select a Category</h2>
-          <button onClick={() => fetchWord("Fruits")}>Fruits</button>
-          <button onClick={() => fetchWord("Animals")}>Animals</button>
-          <button onClick={() => fetchWord("Countries")}>Countries</button>
-          <button onClick={() => fetchWord(null)}>Random Word</button>
+          <button onClick={() => setCategory("Animal")}>Animal</button>
+          <button onClick={() => setCategory("Country")}>Country</button>
+          <button onClick={() => setCategory("Food")}>Food</button>
+          <button onClick={() => setCategory("Sport")}>Sport</button>
         </div>
       ) : (
         <div className="game-area">
-          <h2>Category: {category || "Random"}</h2>
+          <h2>Category: {category}</h2>
 
           {/* Back to Category Button */}
           <button className="back-btn" onClick={() => setCategory(null)}>
@@ -112,11 +122,6 @@ export default function HangmanGame() {
           {/* Display Word */}
           <div className="word-display">{displayWord.join(" ")}</div>
 
-          {/* Guessed Letters */}
-          <div className="guessed-letters">
-            <strong>Guessed Letters: </strong>
-            {guessedLetters.length > 0 ? guessedLetters.join(", ") : "None"}
-          </div>
 
           {/* Virtual Keyboard */}
           <div className="keyboard">
