@@ -22,10 +22,10 @@ export default function Levels() {
     if (session?.user) {
       fetch(`/api/getPoints?email=${session.user.email}`)
         .then((res) => res.json())
-        .then((data) => setPoints(data.points ?? 0)) // ✅ Ensure points is always a number
+        .then((data) => setPoints(data.points ?? 0))
         .catch((err) => {
           console.error("Error fetching points:", err);
-          setPoints(0); // ✅ Fallback to 0 in case of an error
+          setPoints(0); 
         });
     }
   }, [session]);

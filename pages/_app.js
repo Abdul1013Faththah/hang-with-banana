@@ -1,14 +1,18 @@
 import '@/styles/globals.css'
 import "../styles/hangman.css";
-
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider } from "next-auth/react";
+import Header from "../components/Header";
 
 export default function App({
-  Component, pageProps: { session, ...pageProps }
+  Component, pageProps: {session, ...pageProps }
 }) {
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps}/>
-    </SessionProvider>
+    <div>
+      <SessionProvider session={session}>
+        <Component {...pageProps}/>
+        <Header />
+      </SessionProvider>
+    </div>
+
   )
 }
