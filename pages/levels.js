@@ -22,10 +22,10 @@ export default function Levels() {
     if (session?.user) {
       fetch(`/api/getPoints?email=${session.user.email}`)
         .then((res) => res.json())
-        .then((data) => setPoints(data.points ?? 0)) // ✅ Ensure points is always a number
+        .then((data) => setPoints(data.points ?? 0))
         .catch((err) => {
           console.error("Error fetching points:", err);
-          setPoints(0); // ✅ Fallback to 0 in case of an error
+          setPoints(0); 
         });
     }
   }, [session]);
@@ -59,22 +59,6 @@ export default function Levels() {
   return (
     <div className="game-page">
       <div className="container">
-        <div className="auth-info">
-          {guest ? (
-            <p>Signed in as Guest ({guestId})</p>
-          ) : session ? (
-            <p>Signed in as {session.user?.name || "Guest"}</p>
-          ) : (
-            <p>Not signed in</p>
-          )}
-          <button
-            className="signout-btn"
-            onClick={handleSignOut}
-          >
-            Sign out
-          </button>
-        </div>
-
         <div className="level-box">
           <h2>Select Level</h2>
           <button className="level-btn" onClick={() => handleLevelSelect("easy")}>

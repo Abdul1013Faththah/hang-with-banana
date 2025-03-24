@@ -92,25 +92,6 @@ input {
   background: url('/background.png') no-repeat center center/cover;
 }
 
-.auth-info {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 10px;
-  border-radius: 5px;
-  color: white;
-}
-
-.signout-btn {
-  background: red;
-  border: none;
-  color: white;
-  padding: 8px 15px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
 .level-box {
   background: rgba(0, 0, 0, 0.7);
   padding: 20px;
