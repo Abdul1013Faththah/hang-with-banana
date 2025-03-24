@@ -59,22 +59,6 @@ export default function Levels() {
   return (
     <div className="game-page">
       <div className="container">
-        <div className="auth-info">
-          {guest ? (
-            <p>Signed in as Guest ({guestId})</p>
-          ) : session ? (
-            <p>Signed in as {session.user?.name || "Guest"}</p>
-          ) : (
-            <p>Not signed in</p>
-          )}
-          <button
-            className="signout-btn"
-            onClick={handleSignOut}
-          >
-            Sign out
-          </button>
-        </div>
-
         <div className="level-box">
           <h2>Select Level</h2>
           <button className="level-btn" onClick={() => handleLevelSelect("easy")}>

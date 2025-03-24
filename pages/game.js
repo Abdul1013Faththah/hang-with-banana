@@ -126,22 +126,6 @@ export default function Game() {
 
   return (
     <div className="game-page">
-      <div className="auth-info">
-        {guest ? (
-          <p>Signed in as Guest ({guestId})</p>
-        ) : session ? (
-          <p>Signed in as {session.user?.name || "Guest"}</p>
-        ) : (
-          <p>Not signed in</p>
-        )}
-        <button
-          className="signout-btn"
-          onClick={handleSignOut}
-        >
-          Sign out
-        </button>
-      </div>
-
       <div className="game-container">
         <h1>Banana Math Game</h1>
         <div>
