@@ -1,6 +1,7 @@
 import { useState , useEffect } from "react";
 import { useSession ,signIn ,signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import { FaGoogle } from "react-icons/fa";
 
 export default function Component() {
   const { data: session, status } = useSession();
@@ -35,8 +36,8 @@ export default function Component() {
   
       const data = await response.json();
       if (data.success) {
-        localStorage.setItem("guestId", data.guestId); // Store guest ID
-        sessionStorage.setItem("guest", "true"); // Indicate guest session
+        localStorage.setItem("guestId", data.guestId);
+        sessionStorage.setItem("guest", "true");
         router.push("/levels");
       } else {
         alert("Error creating guest user. Please try again.");
@@ -53,6 +54,7 @@ export default function Component() {
       <div className="auth-box">
         <h2>Log in or Sign up</h2>
         <button className="google-btn" onClick={() => signIn("google")}>
+          <img src="/images/google.svg" alt="Google" className="google-img" />
           Sign in with Google
         </button>
         <p>OR</p>
