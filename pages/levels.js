@@ -59,6 +59,9 @@ export default function Levels() {
   return (
     <div className="game-page">
       <div className="container">
+        <button className="back-btn" onClick={() => router.back()}>
+            ⬅ Back
+        </button>
         <div className="level-box">
           <h2>Select Level</h2>
           <button className="level-btn" onClick={() => handleLevelSelect("easy")}>

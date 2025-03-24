@@ -128,6 +128,9 @@ export default function Game() {
     <div className="game-page">
       <div className="game-container">
         <h1>Banana Math Game</h1>
+        <button className="back-btn" onClick={() => router.back()}>
+            ⬅ Back
+        </button>
         <div>
           <label>Select Difficulty: </label>
           <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
