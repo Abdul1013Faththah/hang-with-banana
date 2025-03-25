@@ -1,0 +1,88 @@
+.leaderboard-container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 500px;
+    margin: auto;
+}
+
+.leaderboard-container h1{
+    font-size: 40px;
+}
+
+.leaderboard {
+    max-height: 350px;
+    overflow-y: auto;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    background: #ffe521;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 30px;
+}
+
+.rank {
+    font-weight: bold;
+    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: black;
+    color: white;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid black;
+    margin-right: 10px;
+}
+
+.username {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+}
+
+.points {
+    font-size: 20px;
+    font-weight: bold;
+    background: black;
+    color: #ffe521;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+
+.play-game-btn {
+    background: #ffe521;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.play-game-btn:hover {
+    background: #ffeb51;
+}

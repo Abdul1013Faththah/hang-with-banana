@@ -24,13 +24,13 @@ export default function Leaderboard() {
 
   return (
     <div className="leaderboard-container">
-      <h1>Leaderboard</h1>
+      <h1>⭐ LEADERBOARD ⭐</h1>
       <div className="leaderboard">
         {leaderboard.map((user, index) => (
           <div key={index} className="leaderboard-item">
             <span className="rank">{index + 1}</span>
             <img
-              src={user.image || "/default-profile.png"} // Use default if no profile pic
+              src={user.image || "/images/avatar.jpg"}
               alt={user.name}
               className="profile-pic"
             />
@@ -39,7 +39,9 @@ export default function Leaderboard() {
           </div>
         ))}
       </div>
-      <button onClick={() => router.push("/levels")}>Play Game</button>
+      <button className="play-game-btn" onClick={() => router.push("/levels")}>
+        Play Game 
+      </button>
     </div>
   );
 }

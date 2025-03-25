@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import "../styles/hangman.css";
 import "../styles/header.css";
+import "../styles/leadersboard.css";
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/router";
 import Header from "../components/Header";
