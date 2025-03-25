@@ -30,6 +30,7 @@ export default function Signup() {
       <div className="auth-box">
         <h2>Sign up</h2>
         <form onSubmit={handleSignup}>
+          <div class="input-container">
           <input
             type="text"
             placeholder="Username"
@@ -51,6 +52,7 @@ export default function Signup() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          </div>
           <button type="submit" className="email-btn">
             Sign up with email
           </button>

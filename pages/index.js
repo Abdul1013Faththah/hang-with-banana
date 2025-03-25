@@ -57,8 +57,13 @@ export default function Component() {
           <img src="/images/google.svg" alt="Google" className="google-img" />
           Sign in with Google
         </button>
-        <p>OR</p>
+        <div class="or-container">
+          <hr/>
+            <p>OR</p>
+          <hr/>
+        </div>
         <form onSubmit={handleEmailSignIn}>
+          <div class="input-container">
           <input
             type="email"
             placeholder="Email"
@@ -73,6 +78,7 @@ export default function Component() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          </div>
           <button type="submit" className="email-btn">
             Sign in with email
           </button>
@@ -80,7 +86,11 @@ export default function Component() {
         <button className="guest-btn" onClick={handleGuestSignIn}>
           Play as Guest
         </button>
-        <p>OR</p>
+        <div class="or-container">
+          <hr/>
+            <p>OR</p>
+          <hr/>
+        </div>
         <button className="signup-btn" onClick={() => router.push("/signup")}>
           Sign up
         </button>
