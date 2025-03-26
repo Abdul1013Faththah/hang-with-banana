@@ -44,21 +44,6 @@
   color: white;
 }
 
-.back-btn {
-  background: red;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.back-btn:hover {
-  background: darkred;
-}
-
 .keyboard {
   margin-top: 20px;
   display: grid;
