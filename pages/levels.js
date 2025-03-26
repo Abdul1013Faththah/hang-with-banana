@@ -8,6 +8,7 @@ export default function Levels() {
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showPointsPopup, setShowPointsPopup] = useState(false);
   const [points, setPoints] = useState(null);
 
   useEffect(() => {
@@ -36,57 +37,61 @@ export default function Levels() {
   };
 
   const handlePlayHangman = () => {
-    if (!session) {
+    if (!session && !guest) {
       setShowLoginPrompt(true);
-    } else if (points < 10) {
-      alert("You need at least 10 points to play Hangman!");
+    } else if (points < 10 && !guest) {
+      setShowPointsPopup(true);
+    } else if (guest) {
+      setShowLoginPrompt(true);
     } else {
       router.push("/hangman");
     }
   };
 
-  const handleSignOut = async () => {
+  const handleGuestSignOut = async () => {
     sessionStorage.clear();
     localStorage.clear();
-    
-    if (session) {
-      await signOut({ callbackUrl: "/" });
-    } else {
-      router.push("/");
-    }
+    router.push("/");
   };
 
   return (
-    <div className="game-page">
-      <div className="container">
-        <button className="back-btn" onClick={() => router.back()}>
+    <div className="levels-container">
+      <h1 className="levels-title">Select Level</h1>
+
+      <button className="level-btn" onClick={() => handleLevelSelect("easy")}>
+        Easy <br /> (No timer, 1 point)
+      </button>
+      <button className="level-btn" onClick={() => handleLevelSelect("medium")}>
+        Medium <br /> (1 min timer, 2 points)
+      </button>
+      <button className="level-btn" onClick={() => handleLevelSelect("hard")}>
+        Hard <br /> (30 sec timer, 3 points)
+      </button>
+
+      <div className="button-container">
+        {!guest && (
+          <button className="back-btn" onClick={() => router.back()}>
             ⬅ Back
-        </button>
-        <div className="level-box">
-          <h2>Select Level</h2>
-          <button className="level-btn" onClick={() => handleLevelSelect("easy")}>
-            Easy <br /> (No timer, just 1 point)
           </button>
-          <button className="level-btn" onClick={() => handleLevelSelect("medium")}>
-            Medium <br /> (1 min timer, 2 points)
-          </button>
-          <button className="level-btn" onClick={() => handleLevelSelect("hard")}>
-            Hard <br /> (30 sec timer, 3 points)
-          </button>
-          <button className="hangman-btn" onClick={handlePlayHangman}>
-            Play Hangman
-          </button>
-
-            {showLoginPrompt && (
-          <div className="popup">
-            <p>You need to log in to play Hangman.</p>
-            <button onClick={() => router.push("/")}>Log in</button>
-            <button onClick={() => setShowLoginPrompt(false)}>Cancel</button>
-          </div>
-          )}
-
-        </div>
+        )}
+        <button className="hangman-btn" onClick={handlePlayHangman}>Play Hangman</button>
       </div>
+
+      {showLoginPrompt && (
+        <div className="popup">
+          <p>You need to Signup or Login with Google to play Hangman.</p>
+          <button className="link"  onClick={guest ? handleGuestSignOut : () => router.push("/")}>Log in</button>
+          <button className="back-btn" onClick={() => setShowLoginPrompt(false)}>Cancel</button>
+        </div>
+      )}
+
+      {showPointsPopup && (
+        <div className="popup">
+          <p>You need at least 10 points to play Hangman!</p>
+          <button className="back-btn" onClick={() => setShowPointsPopup(false)}>OK</button>
+        </div>
+      )}
+
     </div>
   );
 }
