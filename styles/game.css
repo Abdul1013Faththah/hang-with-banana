@@ -1,0 +1,85 @@
+    .game-container {
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        text-align: center;
+    }
+    
+    .game-container h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: white;
+    }
+    
+    .game-buttons {
+        margin-top: 10px;
+    }
+    
+    .select-level-btn {
+        background: #ffe521;
+        color: black;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .select-level-btn:hover {
+        background: #ffeb51;
+        transform: scale(1.05);
+    }
+    
+    .timer-container {
+        margin: 15px 0;
+        font-size: 16px;
+    }
+    
+    .image-container img {
+        padding: 10px;
+        object-fit: contain;
+        border-radius: 10px;
+        margin: 10px 0;
+    }
+    
+    .answer-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        width: 100%;
+    }
+    
+    .answer-section input {
+        width: 100%;
+        padding: 12px;
+        margin: 5px 0;
+        border: none;
+        background-color: black;
+        color: white;
+        font-size: 16px;
+        outline: none;
+        text-align: left;
+        transition: all 0.3s ease;
+    }
+
+    .answer-section input::placeholder{
+        color: white;
+    }
+
+    .answer-section input:hover{
+        transform: scale(1.05);
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+    }

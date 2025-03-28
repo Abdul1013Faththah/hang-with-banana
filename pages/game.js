@@ -16,7 +16,9 @@ export default function Game() {
   const [points, setPoints] = useState(session?.user?.points || 0);
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const { level } = router.query; 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showPointsPopup, setShowPointsPopup] = useState(false);
 
   useEffect(() => {
     const storedGuest = sessionStorage.getItem("guest");
@@ -32,7 +34,7 @@ export default function Game() {
         .then((res) => res.json())
         .then((data) => {
           if (data.points !== undefined) {
-            setPoints(data.points); // Set points from database
+            setPoints(data.points);
           }
         })
         .catch((error) => console.error("Error fetching points:", error));
@@ -40,11 +42,14 @@ export default function Game() {
   }, [session]);
 
   useEffect(() => {
-    if (difficulty !== "easy") {
-      setTimeLeft(difficultySettings[difficulty].time);
+    if (level && difficultySettings[level]) {
+      setDifficulty(level);
+      if (level !== "easy") {
+        setTimeLeft(difficultySettings[level].time);
+      }
     }
     fetchNewQuestion();
-  }, [difficulty]);
+  }, [level]);
 
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0) {
@@ -62,25 +67,22 @@ export default function Game() {
   };
 
   const handlePlayHangman = () => {
-    if (!session) {
-      setShowLoginPrompt(true); // Ask guest to log in
-    } else if (points < 10) {
-      alert("You need at least 10 points to play Hangman!");
+    if (!session && !guest) {
+      setShowLoginPrompt(true);
+    } else if (points < 10 && !guest) {
+      setShowPointsPopup(true);
+    } else if (guest) {
+      setShowLoginPrompt(true);
     } else {
       router.push("/hangman");
     }
   };
   
-   const handleSignOut = async () => {
-      sessionStorage.clear();
-      localStorage.clear();
-      
-      if (session) {
-        await signOut({ callbackUrl: "/" });
-      } else {
-        router.push("/");
-      }
-    };
+  const handleGuestSignOut = async () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    router.push("/");
+  };
 
   async function fetchNewQuestion() {
     setMessage("");
@@ -96,6 +98,11 @@ export default function Game() {
   }
 
   async function handleSubmit() {
+    if (timeLeft === 0) {
+      setMessage("Time's up!");
+      return;
+    }
+
     if (parseInt(userAnswer) === correctAnswer) {
       const earnedPoints = difficultySettings[difficulty].points;
       setPoints(points + earnedPoints);
@@ -127,50 +134,57 @@ export default function Game() {
   return (
     <div className="game-page">
       <div className="game-container">
-        <h1>Banana Math Game</h1>
-        <button className="back-btn" onClick={() => router.back()}>
-            ⬅ Back
-        </button>
-        <div>
-          <label>Select Difficulty: </label>
-          <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-            <option value="easy">Easy (1 point)</option>
-            <option value="medium">Medium (2 points)</option>
-            <option value="hard">Hard (3 points)</option>
-          </select>
-        </div>
-
-        {difficulty !== "easy" && <p>Time Left: {timeLeft}s</p>}
-
-        <div className="image-container">
-          {imageUrl && <img src={imageUrl} alt="Math Question" />}
-        </div>
-
-        <input
-          type="number"
-          placeholder="Enter your answer"
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-        />
-        <button onClick={handleSubmit}>Submit</button>
-
-        <p>{message}</p>
-
-        <button onClick={fetchNewQuestion}>Next</button>
-
-        <p>Your Total Points: {points}</p>
-
-        <button className="hangman-btn" onClick={handlePlayHangman}>
-          Play Hangman
-        </button>
-
-          {showLoginPrompt && (
-          <div className="popup">
-            <p>You need to log in to play Hangman.</p>
-            <button onClick={() => router.push("/")}>Log in</button>
-            <button onClick={() => setShowLoginPrompt(false)}>Cancel</button>
+        <h1>FIND THE BANANA</h1>
+          <div className="game-buttons">
+            <button className="select-level-btn" onClick={() => router.push("/levels")}>
+              Select Level
+            </button>
           </div>
-          )}
+
+          <div>
+            {difficulty !== "easy" && <p>Time Left: {timeLeft}s</p>}
+          </div>
+          <div className="image-container">
+            {imageUrl && <img src={imageUrl} alt="Math Question" />}
+          </div>
+
+          <div className="answer-section">
+              <input
+                  type="number"
+                  placeholder="Enter your answer"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  disabled={timeLeft === 0} 
+              />
+
+              <div className="button-group">
+                  <button className="hangman-btn" onClick={handleSubmit} disabled={timeLeft === 0} >Submit</button>
+                  <button className="hangman-btn" onClick={fetchNewQuestion}>Next</button>
+              </div>
+
+              <p>{message}</p>
+              <p>Your Total Points: {points}</p>
+
+              <div className="button-group">
+                  <button className="back-btn" onClick={() => router.back()}>⬅ Back</button>
+                  <button className="hangman-btn" onClick={handlePlayHangman}>Play Hangman</button>
+              </div>
+          </div>
+
+        {showLoginPrompt && (
+          <div className="popup">
+            <p>You need to Signup or Login with Google to play Hangman.</p>
+            <button className="link"  onClick={guest ? handleGuestSignOut : () => router.push("/")}>Log in</button>
+            <button className="back-btn" onClick={() => setShowLoginPrompt(false)}>Cancel</button>
+          </div>
+        )}
+
+        {showPointsPopup && (
+          <div className="popup">
+            <p>You need at least 10 points to play Hangman!</p>
+            <button className="back-btn" onClick={() => setShowPointsPopup(false)}>OK</button>
+          </div>
+        )}
 
       </div>
     </div>

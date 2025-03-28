@@ -6,8 +6,8 @@
   text-align: center;
   font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #ffeb3b; /* Matching global background */
-  color: #171717; /* Dark foreground */
+  background-color: #ffeb3b;
+  color: #171717;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
