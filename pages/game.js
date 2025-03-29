@@ -92,6 +92,10 @@ export default function Game() {
       setImageUrl(data.question);
       setCorrectAnswer(data.solution);
       setUserAnswer("");
+
+      if (difficulty !== "easy") {
+        setTimeLeft(difficultySettings[difficulty].time);
+      }
     } catch (error) {
       console.error("Error fetching question:", error);
     }
@@ -99,22 +103,30 @@ export default function Game() {
 
   async function handleSubmit() {
     if (timeLeft === 0) {
-      setMessage("Time's up!");
+      setMessage("Time's up! You cannot submit.");
       return;
     }
-
+  
     if (parseInt(userAnswer) === correctAnswer) {
       const earnedPoints = difficultySettings[difficulty].points;
       setPoints(points + earnedPoints);
       setMessage(`Correct! You earned ${earnedPoints} points.`);
-
+  
       if (session?.user) {
         await updateUserPoints(earnedPoints);
       }
+  
+      setTimeout(() => {
+        fetchNewQuestion();
+        if (difficulty !== "easy") {
+          setTimeLeft(difficultySettings[difficulty].time);
+        }
+      }, 1000);
     } else {
       setMessage("Wrong answer. Try again!");
     }
   }
+  
 
   async function updateUserPoints(earnedPoints) {
     try {
@@ -158,7 +170,7 @@ export default function Game() {
               />
 
               <div className="button-group">
-                  <button className="hangman-btn" onClick={handleSubmit} disabled={timeLeft === 0} >Submit</button>
+                  <button className="hangman-btn" onClick={handleSubmit} disabled={timeLeft === 0 || message.includes("Correct!")} >Submit</button>
                   <button className="hangman-btn" onClick={fetchNewQuestion}>Next</button>
               </div>
 
