@@ -6,8 +6,8 @@
   text-align: center;
   font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #ffeb3b; /* Matching global background */
-  color: #171717; /* Dark foreground */
+  background-color: #ffeb3b;
+  color: #171717;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -42,21 +42,6 @@
   font-size: 18px;
   margin-top: 10px;
   color: white;
-}
-
-.back-btn {
-  background: red;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.back-btn:hover {
-  background: darkred;
 }
 
 .keyboard {
