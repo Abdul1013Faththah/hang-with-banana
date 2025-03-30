@@ -14,11 +14,17 @@ export default function Game() {
   const [difficulty, setDifficulty] = useState("easy");
   const [timeLeft, setTimeLeft] = useState(null);
   const [points, setPoints] = useState(session?.user?.points || 0);
+  const [earnedPoints, setEarnedPoints] = useState(0);
   const [message, setMessage] = useState("");
   const router = useRouter();
   const { level } = router.query; 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showTimesupPopup, setshowTimesupPopup] = useState(false);
+  const [showCannotSubmitPopup, setshowCannotSubmitPopup] = useState(false);
   const [showPointsPopup, setShowPointsPopup] = useState(false);
+  const [showWrongAnswerPopup, setshowWrongAnswerPopup] = useState(false);
+  const [showWEarnedpointsPopup, setshowWEarnedpointsPopup] = useState(false);
+
 
   useEffect(() => {
     const storedGuest = sessionStorage.getItem("guest");
@@ -56,7 +62,7 @@ export default function Game() {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0) {
-      setMessage("Time's up! Try again.");
+      setshowTimesupPopup(true);
     }
   }, [timeLeft]);
 
@@ -103,14 +109,15 @@ export default function Game() {
 
   async function handleSubmit() {
     if (timeLeft === 0) {
-      setMessage("Time's up! You cannot submit.");
+      setshowCannotSubmitPopup(true);
       return;
     }
   
     if (parseInt(userAnswer) === correctAnswer) {
       const earnedPoints = difficultySettings[difficulty].points;
       setPoints(points + earnedPoints);
-      setMessage(`Correct! You earned ${earnedPoints} points.`);
+      setEarnedPoints(earnedPoints);
+      setshowWEarnedpointsPopup(true);
   
       if (session?.user) {
         await updateUserPoints(earnedPoints);
@@ -123,7 +130,7 @@ export default function Game() {
         }
       }, 1000);
     } else {
-      setMessage("Wrong answer. Try again!");
+      setshowWrongAnswerPopup(true);
     }
   }
   
@@ -195,6 +202,34 @@ export default function Game() {
           <div className="popup">
             <p>You need at least 10 points to play Hangman!</p>
             <button className="back-btn" onClick={() => setShowPointsPopup(false)}>OK</button>
+          </div>
+        )}
+
+        {showTimesupPopup && (
+          <div className="popup">
+            <p>Time's up! Try again.</p>
+            <button className="back-btn" onClick={() => setshowTimesupPopup(false)}>OK</button>
+          </div>
+        )}
+
+        {showCannotSubmitPopup && (
+          <div className="popup">
+            <p>Time's up! You cannot submit.</p>
+            <button className="back-btn" onClick={() => setshowCannotSubmitPopup(false)}>OK</button>
+          </div>
+        )}
+
+        {showWrongAnswerPopup && (
+          <div className="popup">
+            <p>Wrong answer. Try again!</p>
+            <button className="back-btn" onClick={() => setshowWrongAnswerPopup(false)}>OK</button>
+          </div>
+        )}
+
+        {showWEarnedpointsPopup && (
+          <div className="popup">
+            <p>Correct! You earned {earnedPoints} points.</p>
+            <button className="back-btn" onClick={() => setshowWEarnedpointsPopup(false)}>OK</button>
           </div>
         )}
 
