@@ -67,7 +67,6 @@
   transform: scale(1.05);
 }
 
-
 .word-display {
   font-size: 32px;
   margin: 20px 0;
@@ -114,7 +113,6 @@
   margin: 20px auto;
 }
 
-/* Left vertical support pole */
 .hangman-left-pole {
   position: absolute;
   width: 5px;
@@ -124,7 +122,6 @@
   left: 30px;
 }
 
-/* Top horizontal bar */
 .hangman-bar {
   position: absolute;
   width: 100px;
@@ -134,17 +131,15 @@
   left: 30px;
 }
 
-/* Rope hanging from the bar */
 .hangman-rope {
   position: absolute;
   width: 5px;
   height: 40px;
   background: white;
   top: 15px;
-  left: 90px;  /* Centered under the bar */
+  left: 90px;
 }
 
-/* Base support bar */
 .hangman-base {
   position: absolute;
   width: 120px;
@@ -154,7 +149,6 @@
   left: 10px;
 }
 
-/* Hangman body parts */
 .hangman-part {
   position: absolute;
   background-color: white;
@@ -166,7 +160,7 @@
   opacity: 1;
 }
 
-/* Head */
+
 .head {
   width: 40px;
   height: 40px;
@@ -176,7 +170,7 @@
   border: 3px solid white;
 }
 
-/* Body */
+
 .body {
   width: 5px;
   height: 57px;
@@ -185,7 +179,7 @@
   background-color: white;
 }
 
-/* Arms */
+
 .arm-left {
   width: 40px;
   height: 5px;
@@ -202,7 +196,7 @@
   transform: rotate(30deg);
 }
 
-/* Legs */
+
 .leg-left {
   width: 40px;
   height: 5px;
@@ -247,4 +241,71 @@
   cursor: pointer;
   font-weight: bold;
   border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .hangman-container {
+    padding: 15px;
+  }
+
+  .category-btn {
+    width: 80%;
+    font-size: 16px;
+  }
+
+  .keyboard {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .keyboard button {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .hangman-drawing {
+    width: 150px;
+    height: 200px;
+  }
+
+  .word-display {
+    font-size: 28px;
+  }
+
+  .category-selection h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-btn {
+    width: 90%;
+    font-size: 14px;
+  }
+
+  .keyboard {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .keyboard button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .hangman-drawing {
+    width: 120px;
+    height: 160px;
+  }
+
+  .word-display {
+    font-size: 24px;
+  }
+
+  .category-selection h2 {
+    font-size: 18px;
+  }
+
+  .popup {
+    width: 90%;
+    max-width: 280px;
+  }
 }
