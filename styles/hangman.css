@@ -3,34 +3,70 @@
 @tailwind utilities;
 
 .hangman-container {
-  text-align: center;
-  font-family: Arial, sans-serif;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
   padding: 20px;
-  background-color: #ffeb3b;
-  color: #171717;
-  min-height: 100vh;
+  border-radius: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.category-selection {
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
-.category-selection button,
-.restart-btn {
-  background: #4caf50;
+.category-selection h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.hangman-container h2{
+  font-size: 24px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.category-btn {
+  background-color: #ffeb3b;
+  color: #222;
+  border: none;
+  padding: 12px 20px;
+  margin: 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+  width: 300px
+}
+
+.category-btn:hover {
+  background-color: #ffdf00;
+  transform: scale(1.1);
+}
+
+.restart-btn,
+.back-btn {
+  width: 40%;
+  background-color: #3a3a39;
+  border: 1px solid #585858;
   color: white;
   padding: 10px 20px;
   font-size: 16px;
-  border-radius: 5px;
-  margin: 5px;
+  border-radius: 25px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
-.category-selection button:hover,
-.restart-btn:hover {
-  background: #388e3c;
+.restart-btn:hover,
+.back-btn:hover {
+  border-color: #ffffff;
+  transform: scale(1.05);
 }
+
 
 .word-display {
   font-size: 32px;
@@ -78,6 +114,47 @@
   margin: 20px auto;
 }
 
+/* Left vertical support pole */
+.hangman-left-pole {
+  position: absolute;
+  width: 5px;
+  height: 180px;
+  background: white;
+  top: 10px;
+  left: 30px;
+}
+
+/* Top horizontal bar */
+.hangman-bar {
+  position: absolute;
+  width: 100px;
+  height: 5px;
+  background: white;
+  top: 10px;
+  left: 30px;
+}
+
+/* Rope hanging from the bar */
+.hangman-rope {
+  position: absolute;
+  width: 5px;
+  height: 40px;
+  background: white;
+  top: 15px;
+  left: 90px;  /* Centered under the bar */
+}
+
+/* Base support bar */
+.hangman-base {
+  position: absolute;
+  width: 120px;
+  height: 5px;
+  background: white;
+  top: 190px;
+  left: 10px;
+}
+
+/* Hangman body parts */
 .hangman-part {
   position: absolute;
   background-color: white;
@@ -89,51 +166,55 @@
   opacity: 1;
 }
 
+/* Head */
 .head {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  top: 40px;
-  left: 80px;
+  top: 50px;
+  left: 75px;
   border: 3px solid white;
 }
 
+/* Body */
 .body {
   width: 5px;
-  height: 60px;
-  top: 80px;
-  left: 97px;
+  height: 57px;
+  top: 90px;
+  left: 92px;
   background-color: white;
 }
 
+/* Arms */
 .arm-left {
   width: 40px;
   height: 5px;
-  top: 100px;
-  left: 60px;
+  top: 110px;
+  left: 58px;
   transform: rotate(-30deg);
 }
 
 .arm-right {
   width: 40px;
   height: 5px;
-  top: 100px;
-  left: 100px;
+  top: 110px;
+  left: 92px;
   transform: rotate(30deg);
 }
 
+/* Legs */
 .leg-left {
   width: 40px;
   height: 5px;
-  top: 140px;
-  left: 60px;
-  transform: rotate(30deg);
+  top: 150px;
+  left: 58px;
+  transform: rotate(-30deg);
 }
 
 .leg-right {
   width: 40px;
   height: 5px;
-  top: 140px;
-  left: 100px;
-  transform: rotate(-30deg);
+  top: 150px;
+  left: 92px;
+  transform: rotate(30deg);
 }

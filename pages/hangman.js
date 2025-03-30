@@ -95,17 +95,24 @@ export default function HangmanGame() {
       {!category ? (
         <div className="category-selection">
           <h2>Select a Category</h2>
-          <button onClick={() => fetchWord("animal")}>Animals</button>
-          <button onClick={() => fetchWord("country")}>Countries</button>
-          <button onClick={() => fetchWord("food")}>Food</button>
-          <button onClick={() => fetchWord("plant")}>Plants</button>
-          <button onClick={() => fetchWord("sport")}>Sports</button>
+          <button className="category-btn" onClick={() => fetchWord("animal")}>Animals</button>
+          <button className="category-btn" onClick={() => fetchWord("country")}>Countries</button>
+          <button className="category-btn" onClick={() => fetchWord("food")}>Food</button>
+          <button className="category-btn" onClick={() => fetchWord("plant")}>Plants</button>
+          <button className="category-btn" onClick={() => fetchWord("sport")}>Sports</button>
+          <button className="back-btn" onClick={() => router.back()}>
+            ⬅ Back
+          </button>
         </div>
       ) : (
         <div className="game-area">
           <h2>Category: {category}</h2>
 
           <div className="hangman-drawing">
+            <div className="hangman-bar"></div>
+            <div className="hangman-rope"></div>
+            <div className="hangman-left-pole"></div>
+            <div className="hangman-base"></div>
             <div className={`hangman-part head ${wrongGuesses > 0 ? "show" : ""}`} />
             <div className={`hangman-part body ${wrongGuesses > 1 ? "show" : ""}`} />
             <div className={`hangman-part arm-left ${wrongGuesses > 2 ? "show" : ""}`} />
@@ -136,7 +143,7 @@ export default function HangmanGame() {
 
           <div className="game-options">
             <button className="restart-btn" onClick={restartGame}>🔄 Restart Game</button>
-            <button className="back-btn" onClick={() => setCategory(null)}>🔙 Back to Categories</button>
+            <button className="back-btn" onClick={() => setCategory(null)}>Select Categories</button>
           </div>
         </div>
       )}
