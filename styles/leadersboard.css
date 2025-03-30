@@ -4,7 +4,8 @@
     color: white;
     padding: 30px;
     border-radius: 20px;
-    width: 500px;
+    width: 100%;
+    max-width: 500px;
     margin: auto;
 }
 
@@ -88,3 +89,92 @@
     background: #ffeb51;
     transform: scale(1.05);
 }
+
+@media (max-width: 768px) {
+    .leaderboard-container {
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+    }
+  
+    .leaderboard-container h1 {
+      font-size: 32px;
+    }
+  
+    .leaderboard-item {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .rank {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+  
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+    }
+  
+    .username {
+      font-size: 16px;
+    }
+  
+    .points {
+      font-size: 18px;
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+    }
+  
+    .play-game-btn {
+      font-size: 16px;
+      padding: 8px 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .leaderboard-container {
+      padding: 15px;
+      width: 90%;
+      max-width: 350px;
+    }
+  
+    .leaderboard-container h1 {
+      font-size: 28px;
+    }
+  
+    .leaderboard-item {
+      padding: 12px;
+      margin: 8px 0;
+      flex-direction: column;
+    }
+  
+    .rank {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+  
+    .profile-pic {
+      width: 35px;
+      height: 35px;
+      margin-bottom: 8px;
+    }
+  
+    .username {
+      font-size: 14px;
+    }
+  
+    .points {
+      font-size: 16px;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+    }
+  
+    .play-game-btn {
+      font-size: 14px;
+      padding: 6px 12px;
+    }
+  }

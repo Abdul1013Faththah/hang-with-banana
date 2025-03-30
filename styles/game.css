@@ -83,3 +83,53 @@
         gap: 10px;
         width: 100%;
     }
+
+    @media screen and (max-width: 768px) {
+        .game-container {
+            width: 95%;
+            padding: 15px;
+        }
+    
+        .game-container h1 {
+            font-size: 20px;
+        }
+    
+        .select-level-btn {
+            font-size: 16px;
+            padding: 8px 16px;
+        }
+    
+        .timer-container {
+            font-size: 14px;
+        }
+    
+        .answer-section input {
+            padding: 10px;
+            font-size: 14px;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .game-container {
+            width: 100%;
+            padding: 10px;
+        }
+    
+        .game-container h1 {
+            font-size: 18px;
+        }
+    
+        .select-level-btn {
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+    
+        .timer-container {
+            font-size: 12px;
+        }
+    
+        .answer-section input {
+            padding: 8px;
+            font-size: 12px;
+        }
+    }

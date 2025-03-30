@@ -87,6 +87,7 @@ export default function Levels() {
 
       {showPointsPopup && (
         <div className="popup">
+          <img src = "/images/lost.gif" alt = "gif"></img>
           <p>You need at least 10 points to play Hangman!</p>
           <button className="back-btn" onClick={() => setShowPointsPopup(false)}>OK</button>
         </div>
