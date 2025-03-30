@@ -13,6 +13,9 @@ export default function HangmanGame() {
   const [wrongGuesses, setWrongGuesses] = useState(0);
   const [gameOver, setGameOver] = useState(false); // Game over state
   const maxWrongGuesses = 6;
+  const [showGameEndPopup, setShowGameEndPopup] = useState(false);
+  const [gameEndMessage, setGameEndMessage] = useState("");
+  const [gameEndGif, setGameEndGif] = useState("");
 
   useEffect(() => {
     if (!session) return;
@@ -72,10 +75,17 @@ export default function HangmanGame() {
   };
 
   const handleGameEnd = async (won) => {
-    setGameOver(true); // Mark the game as over
-    setDisplayWord(word.split("")); // Reveal the correct word
+    setGameOver(true);
+    setDisplayWord(word.split(""));
     const points = won ? 5 : -3;
-    alert(won ? "You Win! 🎉" : `Game Over! ❌ The word was: ${word}`);
+    if (won) {
+      setGameEndMessage("You Win!");
+      setGameEndGif("/images/win.gif"); 
+    } else {
+      setGameEndMessage(`Game Over! ❌ The word was: ${word}`);
+      setGameEndGif("/images/lost.gif"); 
+    }
+    setShowGameEndPopup(true);
 
     if (session) {
       await fetch("/api/updatePoints", {
@@ -145,6 +155,13 @@ export default function HangmanGame() {
             <button className="restart-btn" onClick={restartGame}>🔄 Restart Game</button>
             <button className="back-btn" onClick={() => setCategory(null)}>Select Categories</button>
           </div>
+          {showGameEndPopup && (
+            <div className="popup">
+              <img src={gameEndGif} alt="Game Result" className="popup-gif" />
+              <p>{gameEndMessage}</p>
+              <button className="back-btn" onClick={() => setShowGameEndPopup(false)}>OK</button>
+            </div>
+          )}
         </div>
       )}
     </div>

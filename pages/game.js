@@ -20,7 +20,6 @@ export default function Game() {
   const { level } = router.query; 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showTimesupPopup, setshowTimesupPopup] = useState(false);
-  const [showCannotSubmitPopup, setshowCannotSubmitPopup] = useState(false);
   const [showPointsPopup, setShowPointsPopup] = useState(false);
   const [showWrongAnswerPopup, setshowWrongAnswerPopup] = useState(false);
   const [showWEarnedpointsPopup, setshowWEarnedpointsPopup] = useState(false);
@@ -109,7 +108,7 @@ export default function Game() {
 
   async function handleSubmit() {
     if (timeLeft === 0) {
-      setshowCannotSubmitPopup(true);
+      setshowTimesupPopup(true);
       return;
     }
   
@@ -200,6 +199,7 @@ export default function Game() {
 
         {showPointsPopup && (
           <div className="popup">
+            <img src = "/images/lost.gif" alt = "gif"></img>
             <p>You need at least 10 points to play Hangman!</p>
             <button className="back-btn" onClick={() => setShowPointsPopup(false)}>OK</button>
           </div>
@@ -207,15 +207,9 @@ export default function Game() {
 
         {showTimesupPopup && (
           <div className="popup">
+            <img src = "/images/lost.gif" alt = "gif"></img>
             <p>Time's up! Try again.</p>
             <button className="back-btn" onClick={() => setshowTimesupPopup(false)}>OK</button>
-          </div>
-        )}
-
-        {showCannotSubmitPopup && (
-          <div className="popup">
-            <p>Time's up! You cannot submit.</p>
-            <button className="back-btn" onClick={() => setshowCannotSubmitPopup(false)}>OK</button>
           </div>
         )}
 
@@ -228,6 +222,7 @@ export default function Game() {
 
         {showWEarnedpointsPopup && (
           <div className="popup">
+            <img src = "/images/win.gif" alt = "gif"></img>
             <p>Correct! You earned {earnedPoints} points.</p>
             <button className="back-btn" onClick={() => setshowWEarnedpointsPopup(false)}>OK</button>
           </div>
