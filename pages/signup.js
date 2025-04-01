@@ -21,6 +21,8 @@ export default function Signup() {
       alert("Signup successful! You can now log in.");
       router.push("/");
     } else {
+      const errorData = await response.json();
+      console.log("Error:", errorData.message);
       alert("Signup failed. Try again.");
     }
   };
