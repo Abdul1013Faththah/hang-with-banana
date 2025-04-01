@@ -1,0 +1,62 @@
+.profile-page {
+    padding: 20px;
+    background: #111;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+  
+  .profile-content h2 {
+    text-align: center;
+  }
+  
+  .profile-pic img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+  }
+  
+  .avatar-selection {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  .avatar-list img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+  }
+  
+  .username input {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #444;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #ffe521;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #ffeb51;
+  }
+  
+  .delete-btn {
+    background-color: #ff4444;
+    color: white;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff2222;
+  }
+  
