@@ -34,7 +34,7 @@ export default function Leaderboard() {
               alt={user.name}
               className="profile-pic"
             />
-            <span className="username">{user.name || "Unknown User"}</span>
+            <span className="username">{user.username || "Unknown User"}</span>
             <span className="points">{user.points}</span>
           </div>
         ))}

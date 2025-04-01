@@ -33,7 +33,7 @@ export default NextAuth({
           throw new Error("Invalid password");
         }
 
-        return { email: user.email, name: user.name };
+        return { email: user.email, username: user.username };
       },
     }),
   ],
@@ -53,9 +53,8 @@ export default NextAuth({
 
           if (!existingUser) {
             await db.collection("users").insertOne({
-              name: user.name,
+              username: user.name,
               email: user.email,
-              username: user.email.split("@")[0],
               image: user.image,
               provider: "google",
               points: 0,
@@ -73,7 +72,7 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.name = user.name;
+        token.username = user.username;
         token.email = user.email;
       }
       return token;
@@ -81,7 +80,7 @@ export default NextAuth({
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
-        session.user.name = token.name;
+        session.user.username = token.username;
         session.user.email = token.email;
 
       }

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function Signup() {
   const router = useRouter();
-  const [name, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,7 +14,7 @@ export default function Signup() {
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ username, email, password }),
     });
 
     if (response.ok) {
@@ -36,7 +36,7 @@ export default function Signup() {
           <input
             type="text"
             placeholder="Username"
-            value={name}
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
