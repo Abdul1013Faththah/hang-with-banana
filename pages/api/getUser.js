@@ -10,14 +10,13 @@ export default async function handler(req, res) {
     const client = await clientPromise;
     const db = client.db();
 
-    // Find user by email
     const user = await db.collection("users").findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ username: user.username });
+    res.status(200).json({ username: user.username ,  profilePic: user.image || "/default-profile.png"  });
   } catch (error) {
     res.status(500).json({ message: "Error fetching user" });
   }
