@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function Signup() {
   const router = useRouter();
-  const [name, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,13 +14,15 @@ export default function Signup() {
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ username, email, password }),
     });
 
     if (response.ok) {
       alert("Signup successful! You can now log in.");
       router.push("/");
     } else {
+      const errorData = await response.json();
+      console.log("Error:", errorData.message);
       alert("Signup failed. Try again.");
     }
   };
@@ -34,7 +36,7 @@ export default function Signup() {
           <input
             type="text"
             placeholder="Username"
-            value={name}
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />

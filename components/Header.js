@@ -7,6 +7,7 @@ export default function Header() {
   const router = useRouter();
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
+  const [username, setUsername] = useState(""); 
 
   useEffect(() => {
     const storedGuest = sessionStorage.getItem("guest");
@@ -15,6 +16,19 @@ export default function Header() {
       setGuestId(localStorage.getItem("guestId") || "Guest");
     }
   }, []);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetch(`/api/getUser?email=${session.user.email}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.username) {
+            setUsername(data.username);
+          }
+        })
+        .catch((err) => console.error("Error fetching username:", err));
+    }
+  }, [session]);
 
   const handleSignOut = async () => {
     sessionStorage.clear();
@@ -32,7 +46,7 @@ export default function Header() {
         {guest ? (
           <p>Signed in as Guest ({guestId})</p>
         ) : session ? (
-          <p>Signed in as {session.user?.name || "Guest"}</p>
+          <p>Signed in as {session.user?.username ||  session.user.name}</p>
         ) : (
           <p>Not signed in</p>
         )}

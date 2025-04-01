@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const client = await clientPromise;
     const db = client.db();
     const leaderboard = await db.collection("users")
-      .find({}, { projection: { name: 1, points: 1, image: 1 } })
+      .find({}, { projection: { username: 1, points: 1, image: 1 } })
       .sort({ points: -1 }) // Sort by highest points
       .limit(10) // Limit to top 10 users
       .toArray();
