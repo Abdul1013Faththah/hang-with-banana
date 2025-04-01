@@ -7,7 +7,7 @@ export default function Header() {
   const router = useRouter();
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
-  const [profilePic, setProfilePic] = useState("/default-profile.png"); // Default profile pic
+  const [profilePic, setProfilePic] = useState("/default-profile.png");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,6 @@ export default function Header() {
 
   useEffect(() => {
     if (session?.user?.email) {
-      // Fetch profile picture from MongoDB
       fetch(`/api/getProfilePic?email=${session.user.email}`)
         .then((res) => res.json())
         .then((data) => {
@@ -46,7 +45,13 @@ export default function Header() {
     <header className="header">
       <div className="header-content">
         {guest ? (
-          <p>Signed in as Guest ({guestId})</p>
+          <div>
+              <p>Signed in as Guest ({guestId})</p>
+              <button onClick={handleSignOut}>
+                <i className="ri-logout-circle-fill"></i> Log Out
+              </button>
+          </div>
+
         ) : session ? (
           <div className="profile-dropdown">
             <button className="profile-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
@@ -55,7 +60,7 @@ export default function Header() {
             </button>
             {dropdownOpen && (
               <div className="dropdown-menu">
-                <button onClick={() => router.push("/edit-profile")}>
+                <button onClick={() => router.push("/profile")}>
                   <i className="ri-user-3-fill"></i> Edit Profile
                 </button>
                 <button onClick={handleSignOut}>
