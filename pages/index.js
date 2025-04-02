@@ -57,13 +57,13 @@ export default function Component() {
           <img src="/images/google.svg" alt="Google" className="google-img" />
           Sign in with Google
         </button>
-        <div class="or-container">
+        <div className="or-container">
           <hr/>
             <p>OR</p>
           <hr/>
         </div>
         <form onSubmit={handleEmailSignIn}>
-          <div class="input-container">
+          <div className="input-container">
           <input
             type="email"
             placeholder="Email"
@@ -86,7 +86,7 @@ export default function Component() {
         <button className="guest-btn" onClick={handleGuestSignIn}>
           Play as Guest
         </button>
-        <div class="or-container">
+        <div className="or-container">
           <hr/>
             <p>OR</p>
           <hr/>

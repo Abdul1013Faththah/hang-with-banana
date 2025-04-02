@@ -7,6 +7,8 @@ export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -18,12 +20,17 @@ export default function Signup() {
     });
 
     if (response.ok) {
-      alert("Signup successful! You can now log in.");
-      router.push("/");
+      setPopupMessage("Signup successful! You can now log in.");
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+        router.push("/");
+      }, 5000);
     } else {
       const errorData = await response.json();
       console.log("Error:", errorData.message);
-      alert("Signup failed. Try again.");
+      setPopupMessage("User Already Exists");
+      setShowPopup(true);
     }
   };
 
@@ -66,6 +73,14 @@ export default function Signup() {
           </span>
         </p>
       </div>
+
+      {showPopup && (
+        <div className="popup">
+          <p>{popupMessage}</p>
+          <button className="close-btn" onClick={() => setShowPopup(false)}>OK</button>
+        </div>
+      )}
+
     </div>
   );
 }

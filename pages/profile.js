@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Profile() {
@@ -7,8 +7,8 @@ export default function Profile() {
   const router = useRouter();
   
   const [userData, setUserData] = useState(null);
-  const [newUsername, setNewUsername] = useState("");
-  const [newProfilePic, setNewProfilePic] = useState("");
+  const [username, setUsername] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [avatarSelected, setAvatarSelected] = useState("");
 
   useEffect(() => {
@@ -17,15 +17,15 @@ export default function Profile() {
         .then((res) => res.json())
         .then((data) => {
           setUserData(data);
-          setNewUsername(data.username || "");
-          setNewProfilePic(data.profilePic || "/default-profile.png");
+          setUsername(data.username || "");
+          setSelectedImage(data.profilePic || "/default-profile.png");
         })
         .catch((error) => console.error("Error fetching user data", error));
     }
   }, [session]);
 
   const handleUsernameChange = (e) => {
-    setNewUsername(e.target.value);
+    setUsername(e.target.value);
   };
 
   const handleProfilePicChange = (e) => {
@@ -33,7 +33,7 @@ export default function Profile() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setNewProfilePic(reader.result);
+        setSelectedImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -41,34 +41,45 @@ export default function Profile() {
 
   const handleAvatarSelect = (avatar) => {
     setAvatarSelected(avatar);
-    setNewProfilePic(avatar);
+    setSelectedImage(avatar);
   };
 
-  const handleSaveChanges = () => {
-    fetch("/api/updateUserProfile", {
+  const handleSaveChanges = async () => {
+    const response = await fetch("/api/updateUserProfile", {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: newUsername, profilePic: newProfilePic }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Profile updated successfully!");
-      })
-      .catch((err) => console.error("Error updating profile:", err));
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: session.user.email, username, image: selectedImage }),
+    });
+  
+    const data = await response.json();
+    window.location.reload();
+    alert(data.message);
   };
 
   const handleDeleteProfile = async () => {
-    const confirmation = window.confirm(
-      "Are you sure you want to delete your profile? This action cannot be undone."
-    );
+    if (!confirm("Are you sure you want to delete your profile? This action cannot be undone.")) return;
+  
+    const response = await fetch(`/api/deleteUserProfile?email=${session.user.email}`, {
+      method: "DELETE",
+    });
+  
+    const data = await response.json();
+  
+    if (response.ok) {
+      alert("Profile deleted successfully.");
+      handleSignOut({ callbackUrl: "/" });
+    } else {
+      alert(`Error: ${data.message}`);
+    }
+  };
 
-    if (confirmation) {
-      await fetch("/api/deleteUserProfile", {
-        method: "DELETE",
-      });
-      signOut({ callbackUrl: "/" });
+  const handleSignOut = async () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    if (session) {
+      await signOut({ callbackUrl: "/" });
+    } else {
+      router.push("/");
     }
   };
 
@@ -78,7 +89,7 @@ export default function Profile() {
         <div className="profile-content">
           <h2>Profile Details</h2>
           <div className="profile-pic">
-            <img src={newProfilePic} alt="Profile" />
+            <img src={selectedImage} alt="Profile" />
             <input type="file" accept="image/*" onChange={handleProfilePicChange} />
           </div>
 
@@ -86,19 +97,19 @@ export default function Profile() {
             <h3>Select Avatar</h3>
             <div className="avatar-list">
               <img
-                src="/avatar1.png"
+                src="images/avatar1.jpg"
                 alt="Avatar 1"
-                onClick={() => handleAvatarSelect("/avatar1.png")}
+                onClick={() => handleAvatarSelect("images/avatar1.jpg")}
               />
               <img
-                src="/avatar2.png"
+                src="images/avatar2.jpg"
                 alt="Avatar 2"
-                onClick={() => handleAvatarSelect("/avatar2.png")}
+                onClick={() => handleAvatarSelect("images/avatar2.jpg")}
               />
               <img
-                src="/avatar3.png"
+                src="images/avatar3.jpg"
                 alt="Avatar 3"
-                onClick={() => handleAvatarSelect("/avatar3.png")}
+                onClick={() => handleAvatarSelect("images/avatar3.jpg")}
               />
             </div>
           </div>
@@ -107,12 +118,12 @@ export default function Profile() {
             <label>Username:</label>
             <input
               type="text"
-              value={newUsername}
+              value={username}
               onChange={handleUsernameChange}
               placeholder="Enter new username"
             />
           </div>
-
+          <button className="back-btn" onClick={() => router.back()}>Back</button>
           <button onClick={handleSaveChanges}>Save Changes</button>
 
           <div className="delete-profile">

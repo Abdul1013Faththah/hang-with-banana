@@ -23,6 +23,7 @@ export default async function handler(req, res) {
       username,
       email,
       password: hashedPassword,
+      image : "images/avatar.jpg",
       points :0,
       createdAt: new Date(),
     });
