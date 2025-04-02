@@ -6,23 +6,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { username, profilePic } = req.body;
-    const { email } = req.query;
+    const { email, username, image } = req.body; // Get data from request
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
 
     const client = await clientPromise;
     const db = client.db();
-    const user = await db.collection("users").updateOne(
+
+    // Update user details
+    const result = await db.collection("users").updateOne(
       { email },
-      {
-        $set: {
-          username,
-          profilePic,
-        },
-      }
+      { $set: { username, image } }
     );
 
-    if (user.modifiedCount === 0) {
-      return res.status(404).json({ message: "User not found or no changes made" });
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({ message: "No changes detected" });
     }
 
     res.status(200).json({ message: "Profile updated successfully" });

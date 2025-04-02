@@ -1,6 +1,6 @@
 .profile-page {
     padding: 20px;
-    background: #111;
+    background: rgba(0, 0, 0, 0.9);
     color: white;
     max-width: 800px;
     margin: 0 auto;
@@ -38,18 +38,6 @@
     border: 1px solid #444;
   }
   
-  button {
-    padding: 10px 20px;
-    background-color: #ffe521;
-    color: #0a0a0a;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #ffeb51;
-  }
   
   .delete-btn {
     background-color: #ff4444;
