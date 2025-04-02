@@ -53,11 +53,11 @@ export default function Header() {
           <div className="profile-dropdown">
             <button className="profile-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
               <img src={profilePic} alt="Profile" className="profile-pic" />
-              <p>{session.user?.username || session.user.name}</p>
+              <p>{username || session.user.name}</p>
             </button>
             {dropdownOpen && (
               <div className="dropdown-menu">
-                <button onClick={() => router.push("/profile")}>
+                <button onClick={() => {router.push("/profile"); setDropdownOpen(false);}}>
                   <i className="ri-user-3-fill"></i> Edit Profile
                 </button>
                 <button onClick={handleSignOut}>

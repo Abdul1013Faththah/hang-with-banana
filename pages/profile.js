@@ -52,6 +52,7 @@ export default function Profile() {
     });
   
     const data = await response.json();
+    window.location.reload();
     alert(data.message);
   };
 
