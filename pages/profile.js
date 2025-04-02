@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Profile() {
@@ -52,19 +52,33 @@ export default function Profile() {
     });
   
     const data = await response.json();
-    alert(data.message); // Show success or error message
+    alert(data.message);
   };
 
   const handleDeleteProfile = async () => {
-    const confirmation = window.confirm(
-      "Are you sure you want to delete your profile? This action cannot be undone."
-    );
+    if (!confirm("Are you sure you want to delete your profile? This action cannot be undone.")) return;
+  
+    const response = await fetch(`/api/deleteUserProfile?email=${session.user.email}`, {
+      method: "DELETE",
+    });
+  
+    const data = await response.json();
+  
+    if (response.ok) {
+      alert("Profile deleted successfully.");
+      handleSignOut({ callbackUrl: "/" });
+    } else {
+      alert(`Error: ${data.message}`);
+    }
+  };
 
-    if (confirmation) {
-      await fetch("/api/deleteUserProfile", {
-        method: "DELETE",
-      });
-      signOut({ callbackUrl: "/" });
+  const handleSignOut = async () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    if (session) {
+      await signOut({ callbackUrl: "/" });
+    } else {
+      router.push("/");
     }
   };
 
