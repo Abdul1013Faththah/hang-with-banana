@@ -6,13 +6,12 @@ export default async function handler(req, res) {
   try {
     const { email, points } = req.body;
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db("hang-with-banana");
 
-    // Increment user's points instead of overwriting them
     await db.collection("users").updateOne(
       { email },
-      { $inc: { points: points } }, // This ensures points are accumulated
-      { upsert: true } // If user doesn't exist, create them
+      { $inc: { points: points } },
+      { upsert: true }
     );
 
     res.status(200).json({ message: "Points updated successfully" });

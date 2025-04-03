@@ -8,8 +8,7 @@ export default async function handler(req, res) {
     if (!email) return res.status(400).json({ message: "Email is required" });
 
     const client = await clientPromise;
-    const db = client.db();
-
+    const db = client.db("hang-with-banana");
     const user = await db.collection("users").findOne({ email });
 
     if (!user) {

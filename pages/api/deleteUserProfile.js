@@ -9,9 +9,7 @@ export default async function handler(req, res) {
     const { email } = req.query;
 
     const client = await clientPromise;
-    const db = client.db();
-    
-    // Delete user profile from DB
+    const db = client.db("hang-with-banana");
     const result = await db.collection("users").deleteOne({ email });
     
     if (result.deletedCount === 0) {

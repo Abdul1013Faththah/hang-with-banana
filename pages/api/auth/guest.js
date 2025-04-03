@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
     const guestId = `guest_${Date.now()}`;
 
-    await db.collection("users").insertOne({
+    await db.collection("guest_acc").insertOne({
       guestId: guestId,
       createdAt: new Date(),
     });

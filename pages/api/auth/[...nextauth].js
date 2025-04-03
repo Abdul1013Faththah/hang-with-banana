@@ -6,13 +6,11 @@ import clientPromise from "../../../lib/mongodb";
 
 export default NextAuth({
   providers: [
-    // Google OAuth authentication
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }),
 
-    // Email/Password authentication with MongoDB
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -21,7 +19,7 @@ export default NextAuth({
       },
       async authorize(credentials) {
         const client = await clientPromise;
-        const db = client.db();
+        const db = client.db("hang-with-banana");
         const user = await db.collection("users").findOne({ email: credentials.email });
 
         if (!user) {
@@ -47,7 +45,7 @@ export default NextAuth({
         
         try {
           const client = await clientPromise;
-          const db = client.db();
+          const db = client.db("hang-with-banana");
           
           let existingUser = await db.collection("users").findOne({ email: user.email });
 
