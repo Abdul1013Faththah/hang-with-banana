@@ -8,6 +8,8 @@ export default async function handler(req, res) {
   try {
     const { email, username, image } = req.body;
 
+    console.log("Received data:", { email, username, image }); 
+
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }

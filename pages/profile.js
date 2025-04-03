@@ -41,18 +41,24 @@ export default function Profile() {
   };
 
   const handleSaveChanges = async () => {
+    console.log("Sending data:", { email: session?.user?.email, username, image: selectedImage });
+  
     const response = await fetch("/api/updateUserProfile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: session.user.email, username, image: selectedImage }),
+      body: JSON.stringify({ email: session?.user?.email, username, image: selectedImage }),
     });
   
     const data = await response.json();
-    setPopupMessage("Profile updated successfully!");
-    setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    });
+    console.log("Server response:", data);
+  
+    if (response.ok) {
+      setPopupMessage("Profile updated successfully!");
+      setShowPopup(true);
+    } else {
+      setPopupMessage(`${data.message}`);
+      setShowPopup(true);
+    }
   };
 
   const handleDeleteProfile = () => {
@@ -138,7 +144,7 @@ export default function Profile() {
       {showPopup && (
         <div className="popup">
           <p>{popupMessage}</p>
-          <button className="close-btn" onClick={() => setShowPopup(false)}>OK</button>
+          <button className="close-btn" onClick={() => {setShowPopup(false); window.location.reload()}}>OK</button>
         </div>
       )}
 
