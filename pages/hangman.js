@@ -106,6 +106,7 @@ export default function HangmanGame() {
     <div className="hangman-container">
       {!category ? (
         <div className="category-selection">
+          <h1>Wellcome to Hang Wuth Banana</h1>
           <h2>Select a Category</h2>
           <p>Your Total Points: {points}</p>
           <button className="category-btn" onClick={() => fetchWord("animal")}>Animals</button>

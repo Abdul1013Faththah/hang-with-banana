@@ -41,8 +41,18 @@ body {
   text-align: center;
 }
 
+.auth-box h1 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: bolder;
+}
+
+
 .auth-box h2 {
   margin-bottom: 10px;
+  font-weight: 20px;
+  font-weight: bolder;
 }
 
 .google-btn {

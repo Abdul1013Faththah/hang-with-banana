@@ -52,6 +52,7 @@ export default function Component() {
   return (
     <div className="container">
       <div className="auth-box">
+        <h1>Welcome to Hang with Banana</h1>
         <h2>Log in or Sign up</h2>
         <button className="google-btn" onClick={() => signIn("google")}>
           <img src="/images/google.svg" alt="Google" className="google-img" />
