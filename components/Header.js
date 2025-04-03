@@ -8,7 +8,7 @@ export default function Header() {
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
   const [username, setUsername] = useState(""); 
-  const [profilePic, setProfilePic] = useState("/default-profile.png");
+  const [profilePic, setProfilePic] = useState("images/avatar.jpg");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -23,7 +23,11 @@ export default function Header() {
         .then((res) => res.json())
         .then((data) => {
           if (data.username) setUsername(data.username);
-          if (data.profilePic) setProfilePic(data.profilePic);
+          if (data.profilePic) {
+            setProfilePic(data.profilePic);
+          } else if (session?.user?.image) {
+            setProfilePic(session.user.image);
+          }
         })
         .catch((err) => console.error("Error fetching user info:", err));
     }
@@ -62,8 +66,8 @@ export default function Header() {
       <div className="header-content">
         {guest ? (
           <div>
-              <p>Signed in as Guest ({guestId})</p>
-              <button onClick={handleSignOut}>
+              <p>Signed in as Guest</p>
+              <button className="signout-btn" onClick={handleSignOut}>
                 <i className="ri-logout-circle-fill"></i> Log Out
               </button>
           </div>

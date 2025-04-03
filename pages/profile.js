@@ -18,7 +18,7 @@ export default function Profile() {
         .then((data) => {
           setUserData(data);
           setUsername(data.username || "");
-          setSelectedImage(data.profilePic || "/default-profile.png");
+          setSelectedImage(data.profilePic || "images/avatar.jpg");
         })
         .catch((error) => console.error("Error fetching user data", error));
     }
@@ -35,17 +35,6 @@ export default function Profile() {
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
-  };
-
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleSaveChanges = async () => {

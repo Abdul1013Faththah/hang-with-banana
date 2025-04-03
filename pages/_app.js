@@ -20,12 +20,6 @@ export default function App({
     <div>
       <SessionProvider session={session}>
         {!hideHeaderOn.includes(router.pathname) && <Header />}
-        <Head>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css"
-        />
-      </Head>
         <Component {...pageProps}/>
       </SessionProvider>
     </div>
