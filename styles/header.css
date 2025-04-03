@@ -30,12 +30,12 @@
     cursor: pointer;
   }
   
-  .profile-pic {
+  .profile-pic-h {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid white;
+    border: 2px solid black;
   }
   
   .dropdown-menu {
@@ -48,7 +48,7 @@
     display: flex;
     flex-direction: column;
     padding: 5px;
-    min-width: 120px;
+    min-width: 150px;
   }
   
   .dropdown-menu button {

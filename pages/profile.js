@@ -9,7 +9,7 @@ export default function Profile() {
   const [userData, setUserData] = useState(null);
   const [username, setUsername] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
-  const [avatarSelected, setAvatarSelected] = useState("");
+  const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -24,6 +24,15 @@ export default function Profile() {
     }
   }, [session]);
 
+  const handleProfilePicClick = () => {
+    setIsAvatarPopupOpen(true);
+  };
+
+  const handleAvatarSelect = (avatar) => {
+    setSelectedImage(avatar);
+    setIsAvatarPopupOpen(false);
+  };
+
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -37,11 +46,6 @@ export default function Profile() {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleAvatarSelect = (avatar) => {
-    setAvatarSelected(avatar);
-    setSelectedImage(avatar);
   };
 
   const handleSaveChanges = async () => {
@@ -88,34 +92,27 @@ export default function Profile() {
       {userData ? (
         <div className="profile-content">
           <h2>Profile Details</h2>
-          <div className="profile-pic">
+          <div className="profile-pic" onClick={handleProfilePicClick} >
             <img src={selectedImage} alt="Profile" />
-            <input type="file" accept="image/*" onChange={handleProfilePicChange} />
           </div>
 
-          <div className="avatar-selection">
-            <h3>Select Avatar</h3>
-            <div className="avatar-list">
-              <img
-                src="images/avatar1.jpg"
-                alt="Avatar 1"
-                onClick={() => handleAvatarSelect("images/avatar1.jpg")}
-              />
-              <img
-                src="images/avatar2.jpg"
-                alt="Avatar 2"
-                onClick={() => handleAvatarSelect("images/avatar2.jpg")}
-              />
-              <img
-                src="images/avatar3.jpg"
-                alt="Avatar 3"
-                onClick={() => handleAvatarSelect("images/avatar3.jpg")}
-              />
+          {isAvatarPopupOpen && (
+            <div className="avatar-popup">
+              <div className="avatar-popup-content">
+                <h3>Select Avatar</h3>
+                <div className="avatar-list">
+                  {["images/avatar1.jpg", "images/avatar2.jpg", "images/avatar3.jpg", "images/avatar4.jpg"].map(
+                    (avatar, index) => (
+                      <img key={index} src={avatar} alt={`Avatar ${index + 1}`} onClick={() => handleAvatarSelect(avatar)} />
+                    )
+                  )}
+                </div>
+                <button className="close-btn" onClick={() => setIsAvatarPopupOpen(false)}>Close</button>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="username">
-            <label>Username:</label>
             <input
               type="text"
               value={username}
@@ -124,7 +121,7 @@ export default function Profile() {
             />
           </div>
           <button className="back-btn" onClick={() => router.back()}>Back</button>
-          <button onClick={handleSaveChanges}>Save Changes</button>
+          <button className="play-game-btn" onClick={handleSaveChanges}>Save Changes</button>
 
           <div className="delete-profile">
             <button className="delete-btn" onClick={handleDeleteProfile}>

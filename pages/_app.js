@@ -8,6 +8,7 @@ import "../styles/profile.css";
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/router";
 import Header from "../components/Header";
+import Head from "next/head"; 
 
 export default function App({
   Component, pageProps: {session, ...pageProps }
@@ -19,9 +20,12 @@ export default function App({
     <div>
       <SessionProvider session={session}>
         {!hideHeaderOn.includes(router.pathname) && <Header />}
+        <Head>
         <link
+          rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css"
         />
+      </Head>
         <Component {...pageProps}/>
       </SessionProvider>
     </div>
