@@ -10,6 +10,9 @@ export default function Profile() {
   const [username, setUsername] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -45,24 +48,33 @@ export default function Profile() {
     });
   
     const data = await response.json();
-    window.location.reload();
-    alert(data.message);
+    setPopupMessage("Profile updated successfully!");
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    });
   };
 
-  const handleDeleteProfile = async () => {
-    if (!confirm("Are you sure you want to delete your profile? This action cannot be undone.")) return;
-  
+  const handleDeleteProfile = () => {
+    setShowConfirmPopup(true);
+  };
+
+  const confirmDeleteProfile = async () => {
+    setShowConfirmPopup(false);
+
     const response = await fetch(`/api/deleteUserProfile?email=${session.user.email}`, {
       method: "DELETE",
     });
-  
+
     const data = await response.json();
-  
+
     if (response.ok) {
-      alert("Profile deleted successfully.");
-      handleSignOut({ callbackUrl: "/" });
+      setTimeout(() => {
+        handleSignOut();
+      });
     } else {
-      alert(`Error: ${data.message}`);
+      setPopupMessage(`Error: ${data.message}`);
+      setShowPopup(true);
     }
   };
 
@@ -121,6 +133,23 @@ export default function Profile() {
       ) : (
         <p>Loading user data...</p>
       )}
+
+
+      {showPopup && (
+        <div className="popup">
+          <p>{popupMessage}</p>
+          <button className="close-btn" onClick={() => setShowPopup(false)}>OK</button>
+        </div>
+      )}
+
+      {showConfirmPopup && (
+        <div className="popup">
+          <p>Are you sure you want to delete your profile? This action cannot be Reverted.</p>
+          <button className="close-btn" onClick={confirmDeleteProfile}>Yes</button>
+          <button className="close-btn" onClick={() => setShowConfirmPopup(false)}>No</button>
+        </div>
+      )}
+
     </div>
   );
 }
