@@ -11,8 +11,9 @@ export default function HangmanGame() {
   const [displayWord, setDisplayWord] = useState([]);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
-  const [gameOver, setGameOver] = useState(false); // Game over state
+  const [gameOver, setGameOver] = useState(false);
   const maxWrongGuesses = 6;
+  const [points, setPoints] = useState(session?.user?.points || 0);
   const [showGameEndPopup, setShowGameEndPopup] = useState(false);
   const [gameEndMessage, setGameEndMessage] = useState("");
   const [gameEndGif, setGameEndGif] = useState("");
@@ -22,6 +23,7 @@ export default function HangmanGame() {
     async function checkPoints() {
       const res = await fetch(`/api/getPoints?email=${session.user.email}`);
       const data = await res.json();
+      setPoints(data.points);
       if (data.points < 10) router.push("/levels");
     }
     checkPoints();
@@ -82,7 +84,7 @@ export default function HangmanGame() {
       setGameEndMessage("You Win!");
       setGameEndGif("/images/win.gif"); 
     } else {
-      setGameEndMessage(`Game Over! ❌ The word was: ${word}`);
+      setGameEndMessage(`Game Over! ❌ You lost 3 points. The word was: ${word}`);
       setGameEndGif("/images/lost.gif"); 
     }
     setShowGameEndPopup(true);
@@ -105,6 +107,7 @@ export default function HangmanGame() {
       {!category ? (
         <div className="category-selection">
           <h2>Select a Category</h2>
+          <p>Your Total Points: {points}</p>
           <button className="category-btn" onClick={() => fetchWord("animal")}>Animals</button>
           <button className="category-btn" onClick={() => fetchWord("country")}>Countries</button>
           <button className="category-btn" onClick={() => fetchWord("food")}>Food</button>
