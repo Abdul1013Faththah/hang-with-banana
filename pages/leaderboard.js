@@ -30,9 +30,9 @@ export default function Leaderboard() {
           <div key={index} className="leaderboard-item">
             <span className="rank">{index + 1}</span>
             <img
-              src={user.image || "/images/avatar.jpg"}
+              src={user.image || session.user.image || "/images/avatar.jpg"}
               alt={user.name}
-              className="profile-pic"
+              className="profile-pic-l"
             />
             <span className="username">{user.username || "Unknown User"}</span>
             <span className="points">{user.points}</span>

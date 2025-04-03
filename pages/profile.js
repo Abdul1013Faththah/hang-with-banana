@@ -9,7 +9,10 @@ export default function Profile() {
   const [userData, setUserData] = useState(null);
   const [username, setUsername] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
-  const [avatarSelected, setAvatarSelected] = useState("");
+  const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -18,58 +21,66 @@ export default function Profile() {
         .then((data) => {
           setUserData(data);
           setUsername(data.username || "");
-          setSelectedImage(data.profilePic || "/default-profile.png");
+          setSelectedImage(data.profilePic || "images/avatar.jpg");
         })
         .catch((error) => console.error("Error fetching user data", error));
     }
   }, [session]);
 
+  const handleProfilePicClick = () => {
+    setIsAvatarPopupOpen(true);
+  };
+
+  const handleAvatarSelect = (avatar) => {
+    setSelectedImage(avatar);
+    setIsAvatarPopupOpen(false);
+  };
+
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAvatarSelect = (avatar) => {
-    setAvatarSelected(avatar);
-    setSelectedImage(avatar);
-  };
-
   const handleSaveChanges = async () => {
+    console.log("Sending data:", { email: session?.user?.email, username, image: selectedImage });
+  
     const response = await fetch("/api/updateUserProfile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: session.user.email, username, image: selectedImage }),
+      body: JSON.stringify({ email: session?.user?.email, username, image: selectedImage }),
     });
   
     const data = await response.json();
-    window.location.reload();
-    alert(data.message);
+    console.log("Server response:", data);
+  
+    if (response.ok) {
+      setPopupMessage("Profile updated successfully!");
+      setShowPopup(true);
+    } else {
+      setPopupMessage(`${data.message}`);
+      setShowPopup(true);
+    }
   };
 
-  const handleDeleteProfile = async () => {
-    if (!confirm("Are you sure you want to delete your profile? This action cannot be undone.")) return;
-  
+  const handleDeleteProfile = () => {
+    setShowConfirmPopup(true);
+  };
+
+  const confirmDeleteProfile = async () => {
+    setShowConfirmPopup(false);
+
     const response = await fetch(`/api/deleteUserProfile?email=${session.user.email}`, {
       method: "DELETE",
     });
-  
+
     const data = await response.json();
-  
+
     if (response.ok) {
-      alert("Profile deleted successfully.");
-      handleSignOut({ callbackUrl: "/" });
+      setTimeout(() => {
+        handleSignOut();
+      });
     } else {
-      alert(`Error: ${data.message}`);
+      setPopupMessage(`Error: ${data.message}`);
+      setShowPopup(true);
     }
   };
 
@@ -88,34 +99,27 @@ export default function Profile() {
       {userData ? (
         <div className="profile-content">
           <h2>Profile Details</h2>
-          <div className="profile-pic">
+          <div className="profile-pic" onClick={handleProfilePicClick} >
             <img src={selectedImage} alt="Profile" />
-            <input type="file" accept="image/*" onChange={handleProfilePicChange} />
           </div>
 
-          <div className="avatar-selection">
-            <h3>Select Avatar</h3>
-            <div className="avatar-list">
-              <img
-                src="images/avatar1.jpg"
-                alt="Avatar 1"
-                onClick={() => handleAvatarSelect("images/avatar1.jpg")}
-              />
-              <img
-                src="images/avatar2.jpg"
-                alt="Avatar 2"
-                onClick={() => handleAvatarSelect("images/avatar2.jpg")}
-              />
-              <img
-                src="images/avatar3.jpg"
-                alt="Avatar 3"
-                onClick={() => handleAvatarSelect("images/avatar3.jpg")}
-              />
+          {isAvatarPopupOpen && (
+            <div className="avatar-popup">
+              <div className="avatar-popup-content">
+                <h3>Select Avatar</h3>
+                <div className="avatar-list">
+                  {["images/avatar1.jpg", "images/avatar2.jpg", "images/avatar3.jpg", "images/avatar4.jpg"].map(
+                    (avatar, index) => (
+                      <img key={index} src={avatar} alt={`Avatar ${index + 1}`} onClick={() => handleAvatarSelect(avatar)} />
+                    )
+                  )}
+                </div>
+                <button className="close-btn" onClick={() => setIsAvatarPopupOpen(false)}>Close</button>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="username">
-            <label>Username:</label>
             <input
               type="text"
               value={username}
@@ -124,7 +128,7 @@ export default function Profile() {
             />
           </div>
           <button className="back-btn" onClick={() => router.back()}>Back</button>
-          <button onClick={handleSaveChanges}>Save Changes</button>
+          <button className="play-game-btn" onClick={handleSaveChanges}>Save Changes</button>
 
           <div className="delete-profile">
             <button className="delete-btn" onClick={handleDeleteProfile}>
@@ -135,6 +139,23 @@ export default function Profile() {
       ) : (
         <p>Loading user data...</p>
       )}
+
+
+      {showPopup && (
+        <div className="popup">
+          <p>{popupMessage}</p>
+          <button className="close-btn" onClick={() => {setShowPopup(false); window.location.reload()}}>OK</button>
+        </div>
+      )}
+
+      {showConfirmPopup && (
+        <div className="popup">
+          <p>Are you sure you want to delete your profile? This action cannot be Reverted.</p>
+          <button className="close-btn" onClick={confirmDeleteProfile}>Yes</button>
+          <button className="close-btn" onClick={() => setShowConfirmPopup(false)}>No</button>
+        </div>
+      )}
+
     </div>
   );
 }

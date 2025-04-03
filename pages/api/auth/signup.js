@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const { username, email, password } = req.body;
     console.log('Received signup request', { username, email, password });
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db("hang-with-banana");
 
     const existingUser = await db.collection("users").findOne({ email });
     if (existingUser) {

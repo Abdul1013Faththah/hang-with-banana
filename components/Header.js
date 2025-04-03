@@ -1,6 +1,6 @@
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState , useRef } from "react";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -8,8 +8,9 @@ export default function Header() {
   const [guest, setGuest] = useState(false);
   const [guestId, setGuestId] = useState("");
   const [username, setUsername] = useState(""); 
-  const [profilePic, setProfilePic] = useState("/default-profile.png");
+  const [profilePic, setProfilePic] = useState("images/avatar.jpg");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
 
   useEffect(() => {
@@ -22,11 +23,33 @@ export default function Header() {
         .then((res) => res.json())
         .then((data) => {
           if (data.username) setUsername(data.username);
-          if (data.profilePic) setProfilePic(data.profilePic);
+          if (data.profilePic) {
+            setProfilePic(data.profilePic);
+          } else if (session?.user?.image) {
+            setProfilePic(session.user.image);
+          }
         })
         .catch((err) => console.error("Error fetching user info:", err));
     }
   }, [session]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
 
   const handleSignOut = async () => {
     sessionStorage.clear();
@@ -43,16 +66,16 @@ export default function Header() {
       <div className="header-content">
         {guest ? (
           <div>
-              <p>Signed in as Guest ({guestId})</p>
-              <button onClick={handleSignOut}>
+              <p>Signed in as Guest</p>
+              <button className="signout-btn" onClick={handleSignOut}>
                 <i className="ri-logout-circle-fill"></i> Log Out
               </button>
           </div>
 
         ) : session ? (
-          <div className="profile-dropdown">
+          <div className="profile-dropdown"  ref={dropdownRef}>
             <button className="profile-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
-              <img src={profilePic} alt="Profile" className="profile-pic" />
+              <img src={profilePic} alt="Profile" className="profile-pic-h" />
               <p>{username || session.user.name}</p>
             </button>
             {dropdownOpen && (

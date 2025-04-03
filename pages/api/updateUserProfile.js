@@ -6,16 +6,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { email, username, image } = req.body; // Get data from request
+    const { email, username, image } = req.body;
+
+    console.log("Received data:", { email, username, image }); 
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
 
     const client = await clientPromise;
-    const db = client.db();
-
-    // Update user details
+    const db = client.db("hang-with-banana");
     const result = await db.collection("users").updateOne(
       { email },
       { $set: { username, image } }
